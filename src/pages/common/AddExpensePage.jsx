@@ -1,10 +1,11 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import React, {useMemo} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 import {AddExpenseSheet} from '../../sheets/AddExpenseSheet';
 import {KeyboardAvoidingView} from 'native-base';
+import {RHFTextField} from '../../components/form/RHFTextField';
 
 const defaultValues = {
   category: '',
@@ -17,10 +18,11 @@ const defaultValues = {
 export const AddExpensePage = ({route}) => {
   const AddExpenseSchema = useMemo(() => {
     return {
+      amount: Yup.number().required(),
       category: Yup.string().required(),
       description: Yup.string().required(),
       wallet: Yup.string().required(),
-      file: Yup.string().required(),
+      file: Yup.object().required(),
       repeat: Yup.bool(),
     };
   }, []);
@@ -38,14 +40,15 @@ export const AddExpensePage = ({route}) => {
         barStyle={'light-content'}
         hidden={false}
       />
-      <SafeAreaView style={styles.body({color: route?.params?.color})}>
-        <KeyboardAvoidingView
-          style={styles.body({color: route?.params?.color})}>
-          <FormProvider {...methods}>
-            <AddExpenseSheet />
-          </FormProvider>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+      <FormProvider {...methods}>
+        <View style={styles.body({color: route?.params?.color})}>
+          <RHFTextField
+            name={'amount'}
+            style={{alignSelf: 'flex-end', justifySelf: 'end'}}
+          />
+          <AddExpenseSheet />
+        </View>
+      </FormProvider>
     </>
   );
 };
@@ -53,6 +56,7 @@ export const AddExpensePage = ({route}) => {
 const styles = StyleSheet.create({
   body: ({color}) => ({
     flex: 1,
+    // alignSelf:'flex-end',
     ...(color && {backgroundColor: color}),
   }),
 });

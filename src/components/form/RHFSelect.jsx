@@ -1,4 +1,4 @@
-import {FormControl, Select, Text, WarningOutlineIcon} from 'native-base';
+import {FormControl, Select, WarningOutlineIcon} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {Alert} from 'react-native';
 import {defaultStyles} from '../../constants/defaultStyles';
@@ -17,7 +17,7 @@ export function RHFSelect({name, options, placeholder, addOptionLabel}) {
             onValueChange={field.onChange}
             placeholder={placeholder || 'Select an option'}
             style={defaultStyles.default}
-            borderRadius={18}
+            borderRadius={10}
             _text={{
               fontSize: 'lg',
             }}>

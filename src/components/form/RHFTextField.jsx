@@ -2,7 +2,7 @@ import {Input} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {defaultStyles} from '../../constants/defaultStyles';
 
-export function RHFTextField({name, placeholder}) {
+export function RHFTextField({name, placeholder, ...other}) {
   const {control} = useFormContext();
   return (
     <Controller
@@ -16,7 +16,8 @@ export function RHFTextField({name, placeholder}) {
             onChangeText={field.onChange}
             style={defaultStyles.default}
             variant={'outline'}
-            borderRadius={18}
+            borderRadius={10}
+            {...other}
           />
           {error?.message && (
             <FormControl.ErrorMessage
