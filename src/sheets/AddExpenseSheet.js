@@ -17,14 +17,19 @@ export const AddExpenseSheet = () => {
     return () => sheetRef?.current?.hide();
   }, []);
 
-  const {handleSubmit, setValue, formState, watch} = useFormContext();
+  const {
+    handleSubmit,
+    setValue,
+    formState: {errors},
+    watch,
+  } = useFormContext();
 
   //Functions
   const onSubmit = useCallback(async values => {
     console.log({values});
   }, []);
 
-  console.log(formState, 'errors', watch());
+  console.log(errors, 'errors', watch());
 
   return (
     <ActionSheet
@@ -99,9 +104,7 @@ export const AddExpenseSheet = () => {
           </View>
           <RHFSwitch name={'repeat'} />
         </View>
-        <Button
-          onPress={() => handleSubmit(onSubmit)}
-          style={styles.continueBtn}>
+        <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
           <Text color={'white'}>Continue</Text>
         </Button>
       </View>

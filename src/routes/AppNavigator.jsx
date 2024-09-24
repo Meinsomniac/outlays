@@ -39,7 +39,7 @@ export const AppNavigator = () => {
               options={({route}) => ({
                 headerShown: true,
                 headerStyle: {
-                  backgroundColor: route?.params?.color || '#E5E5E5',
+                  backgroundColor: '#E5E5E5',
                 },
                 headerShadowVisible: false,
                 headerTintColor: '#000',

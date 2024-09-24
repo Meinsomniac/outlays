@@ -1,11 +1,10 @@
-import React, {forwardRef} from 'react';
-import {FormControl, Input, WarningOutlineIcon} from 'native-base';
+import React from 'react';
+import {FormControl, Input, Text, WarningOutlineIcon} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {defaultStyles} from '../../constants/defaultStyles';
 
-export const RHFTextField = forwardRef((props, ref) => {
+export function RHFTextField({name, ...other}) {
   const {control} = useFormContext();
-  const {name, placeholder, ...other} = props;
   return (
     <Controller
       name={name}
@@ -13,23 +12,27 @@ export const RHFTextField = forwardRef((props, ref) => {
       render={({field, fieldState: {error}}) => (
         <>
           <Input
-            ref={ref}
-            {...other}
             {...field}
-            placeholder={placeholder}
             onChangeText={field.onChange}
             style={defaultStyles.default}
             variant={'outline'}
             borderRadius={10}
+            borderColor={error?.message && 'red.500'}
+            {...other}
           />
           {error?.message && (
-            <FormControl.ErrorMessage
-              leftIcon={<WarningOutlineIcon size="xs" />}>
-              {error?.message}
-            </FormControl.ErrorMessage>
+            <FormControl padding={0}>
+              <FormControl.HelperText
+                padding={0}
+                margin={0}
+                color={'amber.600'}
+                leftIcon={<WarningOutlineIcon size="xs" />}>
+                {error?.message}
+              </FormControl.HelperText>
+            </FormControl>
           )}
         </>
       )}
     />
   );
-});
+}

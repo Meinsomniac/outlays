@@ -8,7 +8,7 @@ import {KeyboardAvoidingView} from 'native-base';
 import {RHFTextField} from '../../components/form/RHFTextField';
 
 const defaultValues = {
-  amount: '',
+  // amount: '',
   category: '',
   description: '',
   wallet: '',
@@ -17,16 +17,14 @@ const defaultValues = {
 };
 
 export const AddExpensePage = ({route}) => {
-  const AddExpenseSchema = useMemo(() => {
-    return {
-      amount: Yup.number().required(),
-      category: Yup.string().required(),
-      description: Yup.string().required(),
-      wallet: Yup.string().required(),
-      file: Yup.object().required(),
-      repeat: Yup.bool(),
-    };
-  }, []);
+  const AddExpenseSchema = Yup.object().shape({
+    // amount: Yup.number().required(),
+    category: Yup.string().required(),
+    description: Yup.string().required(),
+    wallet: Yup.string().required(),
+    file: Yup.array().required(),
+    repeat: Yup.bool(),
+  });
 
   const methods = useForm({
     mode: 'onBlur',
