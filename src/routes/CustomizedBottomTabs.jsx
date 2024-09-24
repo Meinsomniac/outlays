@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {CurvedBottomBar} from 'react-native-curved-bottom-bar';
 import {Iconify} from 'react-native-iconify';
@@ -9,7 +9,7 @@ import {Profile} from '../pages/profile/Profile';
 // import {myEventEmitter} from '../constants/EventEmitter';
 
 const bottomTabDefaultColor = 'rgb(127,61,255)';
-export const CustomizedBottomTabs = ({navigation}) => {
+export default function CustomizedBottomTabs({navigation}) {
   // Local State
   const [isCircleClicked, setIsCircleClicked] = useState(false);
   const extraCircleButtons = useMemo(() => {
@@ -226,7 +226,7 @@ export const CustomizedBottomTabs = ({navigation}) => {
       />
     </CurvedBottomBar.Navigator>
   );
-};
+}
 
 function AnimatedCircles({value, navigation, isCircleClicked}) {
   const positionValue = useRef(

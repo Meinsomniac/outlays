@@ -7,4 +7,9 @@ export const defaultStyles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 14,
   },
+  mainLoader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

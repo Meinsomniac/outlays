@@ -8,6 +8,7 @@ import {KeyboardAvoidingView} from 'native-base';
 import {RHFTextField} from '../../components/form/RHFTextField';
 
 const defaultValues = {
+  amount: '',
   category: '',
   description: '',
   wallet: '',
@@ -42,11 +43,10 @@ export const AddExpensePage = ({route}) => {
       />
       <FormProvider {...methods}>
         <View style={styles.body({color: route?.params?.color})}>
-          <RHFTextField
-            name={'amount'}
-            style={{alignSelf: 'flex-end', justifySelf: 'end'}}
-          />
-          <AddExpenseSheet />
+          <View style={styles.amount}>
+            <RHFTextField name={'amount'} />
+            <AddExpenseSheet />
+          </View>
         </View>
       </FormProvider>
     </>
@@ -56,7 +56,10 @@ export const AddExpensePage = ({route}) => {
 const styles = StyleSheet.create({
   body: ({color}) => ({
     flex: 1,
-    // alignSelf:'flex-end',
     ...(color && {backgroundColor: color}),
   }),
+  amount: {
+    flexDirection: 'column-reverse',
+    flexGrow: 1,
+  },
 });

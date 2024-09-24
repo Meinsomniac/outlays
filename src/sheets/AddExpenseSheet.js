@@ -1,20 +1,14 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {RHFSelect} from '../components/form/RHFSelect';
 import {RHFTextField} from '../components/form/RHFTextField';
-import {Button, Image, Input, Text} from 'native-base';
+import {Button, Image, Text} from 'native-base';
 import {Iconify} from 'react-native-iconify';
 import {RHFSwitch} from '../components/form/RHFSwitch';
 import {useFormContext} from 'react-hook-form';
 
-export const AddExpenseSheet = ({}) => {
+export const AddExpenseSheet = () => {
   const sheetRef = useRef(null);
   const [fileResponse, setFileResponse] = useState([]);
 
@@ -23,24 +17,21 @@ export const AddExpenseSheet = ({}) => {
     return () => sheetRef?.current?.hide();
   }, []);
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: {errors},
-  } = useFormContext();
+  const {handleSubmit, setValue, formState, watch} = useFormContext();
 
   //Functions
-  const onSubmit = useCallback(values => {
-    console.log(values);
+  const onSubmit = useCallback(async values => {
+    console.log({values});
   }, []);
 
-  console.log(errors, 'errors');
+  console.log(formState, 'errors', watch());
 
   return (
     <ActionSheet
       containerStyle={styles.mainSheetStyle}
       ref={sheetRef}
       isModal={false}
+      closable={false}
       backgroundInteractionEnabled={true}
       keyboardHandlerEnabled={false}>
       <View style={styles.spacing}>
@@ -109,9 +100,7 @@ export const AddExpenseSheet = ({}) => {
           <RHFSwitch name={'repeat'} />
         </View>
         <Button
-          onPress={() => {
-            handleSubmit(onSubmit);
-          }}
+          onPress={() => handleSubmit(onSubmit)}
           style={styles.continueBtn}>
           <Text color={'white'}>Continue</Text>
         </Button>

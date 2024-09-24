@@ -13,15 +13,19 @@ import {SheetProvider} from 'react-native-actions-sheet';
 import './src/sheets/sheets';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {NativeBaseProvider} from 'native-base';
+import {Provider} from 'react-redux';
+import {store} from './src/redux';
 
 function App() {
   return (
     <GestureHandlerRootView>
-      <NativeBaseProvider>
-        <SheetProvider>
-          <AppNavigator />
-        </SheetProvider>
-      </NativeBaseProvider>
+      <Provider store={store}>
+        <NativeBaseProvider>
+          <SheetProvider>
+            <AppNavigator />
+          </SheetProvider>
+        </NativeBaseProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }

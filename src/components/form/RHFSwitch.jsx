@@ -1,5 +1,5 @@
+import React from 'react';
 import {Switch} from 'native-base';
-import {useState} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 
 export const RHFSwitch = ({name}) => {
