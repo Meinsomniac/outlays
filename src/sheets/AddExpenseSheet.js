@@ -17,19 +17,12 @@ export const AddExpenseSheet = () => {
     return () => sheetRef?.current?.hide();
   }, []);
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: {errors},
-    watch,
-  } = useFormContext();
+  const {handleSubmit, setValue} = useFormContext();
 
   //Functions
   const onSubmit = useCallback(async values => {
     console.log({values});
   }, []);
-
-  console.log(errors, 'errors', watch());
 
   return (
     <ActionSheet
