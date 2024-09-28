@@ -1,11 +1,12 @@
+import React from 'react';
 import {Button, Text, View} from 'native-base';
-import {useCallback, useMemo, useRef, useState} from 'react';
+import {useCallback, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import DocumentPicker from 'react-native-document-picker';
 import {Iconify} from 'react-native-iconify';
 
-export const UploadSheet = ({payload, onClose}) => {
+export const UploadSheet = ({payload}) => {
   const {setFileResponse, setValue, name} = payload; // use the same setter name when using from different modules
   const sheetRef = useRef();
 
@@ -76,12 +77,13 @@ export const UploadSheet = ({payload, onClose}) => {
     <ActionSheet
       ref={sheetRef}
       gestureEnabled
-      indicatorStyle={{
-        backgroundColor: '#EEE5FF',
-      }}
-      containerStyle={{
-        paddingTop: 4,
-      }}>
+      // indicatorStyle={{
+      //   backgroundColor: '#EEE5FF',
+      // }}
+      // containerStyle={{
+      //   paddingTop: 4,
+      // }}
+    >
       <View style={styles.mainSheet}>
         {attachmentOptions?.map((option, index) => (
           <Button
