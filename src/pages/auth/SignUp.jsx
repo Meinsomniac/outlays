@@ -8,6 +8,9 @@ import * as Yup from 'yup';
 import {validations} from '../../utils/commonValidations';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSignUpMutation} from '../../redux/auth/authActions';
+import {Link, useNavigation} from '@react-navigation/native';
+import {paths} from '../../routes/paths';
+import {useDispatch} from 'react-redux';
 
 const SignUpSchema = Yup.object().shape({
   firstName: validations.firstName(),
@@ -16,6 +19,8 @@ const SignUpSchema = Yup.object().shape({
   password: validations.password(),
 });
 export default function SignUp() {
+  const {navigate} = useNavigation();
+  const dispatch = useDispatch();
   //Hooks
   const methods = useForm({
     mode: 'onTouched',
@@ -37,14 +42,17 @@ export default function SignUp() {
   const onSubmit = useCallback(
     async values => {
       const res = await signUp(values);
-      console.log(res);
+      if (res?.data?.accessToken) {
+        await setStorage('token', res?.data?.accessToken);
+        dispatch(setUserDetails(res?.data?.profile));
+        navigate(paths.home);
+      }
     },
     [signUp],
   );
 
   return (
     <FormProvider {...methods}>
-      {/* <ScrollView> */}
       <KeyboardAwareScrollView
         contentContainerStyle={styles.flexStyle}
         style={styles.body()}
@@ -60,8 +68,13 @@ export default function SignUp() {
             <Text color={'white'}>Submit</Text>
           </Button>
         </View>
+        <Text>
+          Didn't have a account?{' '}
+          <Link to={{screen: paths.signIn}} style={styles.linkStyle}>
+            Sign In
+          </Link>
+        </Text>
       </KeyboardAwareScrollView>
-      {/* </ScrollView> */}
     </FormProvider>
   );
 }
@@ -70,8 +83,6 @@ const styles = StyleSheet.create({
   body: () => ({
     flex: 1,
     backgroundColor: '#E5E5E5',
-    // justifyContent: 'center',
-    // alignItems: 'center',
   }),
   continueBtn: {
     borderRadius: 10,
@@ -88,5 +99,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    rowGap: 5,
+  },
+  linkStyle: {
+    textDecorationLine: 'underline',
+    textDecorationColor: '#7F3DFF',
   },
 });

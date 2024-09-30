@@ -175,7 +175,7 @@ export default function CustomizedBottomTabs({navigation}) {
       initialRouteName="Dashboard"
       borderTopLeftRight
       renderCircle={() => (
-        <View>
+        <View style={styles.circlesContainer}>
           <Animated.View style={styles.btnCircleUp}>
             <TouchableOpacity style={styles.button} onPress={onCircleClicked}>
               <Iconify icon={'fluent:add-28-filled'} color="#fff" size={30} />
@@ -254,20 +254,6 @@ function AnimatedCircles({value, navigation, isCircleClicked}) {
           }),
       useNativeDriver: true,
     }).start();
-
-    // isCircleClicked
-    //   ? Animated.spring(positionValue, {
-    //       toValue: {x: value?.position?.move?.x, y: value?.position?.move?.y},
-    //       friction: 10,
-    //       tension: 200,
-    //       useNativeDriver: true,
-    //     }).start()
-    //   : Animated.spring(positionValue, {
-    //       toValue: {x: value?.position?.halt?.x, y: value?.position?.halt?.y},
-    //       speed: 80,
-    //       bounciness: 5,
-    //       useNativeDriver: true,
-    //     }).start();
   }, [positionValue, value, isCircleClicked]);
 
   return (
@@ -308,7 +294,7 @@ export const styles = StyleSheet.create({
     width: 60,
     borderRadius: 30,
     position: 'absolute',
-    bottom: 32,
+    bottom: 27,
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 1,
@@ -318,6 +304,12 @@ export const styles = StyleSheet.create({
     },
     ...extra,
   }),
+  circlesContainer: {
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   shawdow: {
     shadowColor: '#DDDDDD',
     shadowOffset: {

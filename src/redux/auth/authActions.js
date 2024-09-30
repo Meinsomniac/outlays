@@ -11,7 +11,14 @@ const authApi = api.injectEndpoints({
       }),
       transformResponse: res => res,
     }),
+    signIn:builder.mutation({
+      query:(body) => ({
+        url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signIn.url,
+        method: apiRoutes.AUTHENTICATION.signIn.method,
+        body,
+      })
+    })
   }),
 });
 
-export const {useSignUpMutation} = authApi;
+export const {useSignUpMutation,useSignInMutation} = authApi;

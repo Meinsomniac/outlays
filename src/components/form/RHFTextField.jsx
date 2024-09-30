@@ -21,10 +21,8 @@ export function RHFTextField({name, ...other}) {
               style={defaultStyles.default}
               variant={'outline'}
               borderRadius={10}
-              // borderColor={error?.message && 'red.500'}
               {...other}
             />
-            {/* {error?.message && ( */}
             <FormControl.ErrorMessage
               padding={0}
               margin={0}
@@ -32,7 +30,6 @@ export function RHFTextField({name, ...other}) {
               leftIcon={<WarningOutlineIcon size="xs" />}>
               {error?.message}
             </FormControl.ErrorMessage>
-            {/* )} */}
           </FormControl>
         </>
       )}
