@@ -1,4 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {setStorage} from '../../utils/storageUtils';
+import {NavigationRouteContext} from '@react-navigation/native';
 
 export const authSlice = createSlice({
   name: 'auth',

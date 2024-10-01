@@ -92,7 +92,7 @@ export const UploadSheet = ({payload}) => {
             onPress={option?.onClick}>
             <View style={styles?.centerAlign}>
               {option?.icon}
-              <Text style={styles?.title}>{option?.title}</Text>
+              <Text style={styles?.title}>{option?.title} </Text>
             </View>
           </Button>
         ))}

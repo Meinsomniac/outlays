@@ -1,6 +1,6 @@
 import {Button, Text, View} from 'native-base';
-import React, {useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
 import {RHFTextField} from '../../components/form/RHFTextField';
 import {FormProvider, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -13,15 +13,32 @@ import {paths} from '../../routes/paths';
 import {setUserDetails} from '../../redux/auth/authSlice';
 import {useDispatch} from 'react-redux';
 import {setStorage} from '../../utils/storageUtils';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const SignInSchema = Yup.object().shape({
   email: validations.email(),
   password: validations.password(),
 });
+
+GoogleSignin.configure({
+  webClientId: process.env.GOOGLE_CLIENT_ID,
+});
+
+const GoogleLogin = async () => {
+  await GoogleSignin.hasPlayServices().then(has => console.log(has));
+  const userInfo = await GoogleSignin.signIn();
+  console.log('here', userInfo);
+  return userInfo;
+};
+
 export default function SignIn() {
+  //Local States
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  //Hooks
   const dispatch = useDispatch();
   const {navigate} = useNavigation();
-  //Hooks
   const methods = useForm({
     mode: 'onTouched',
     reValidateMode: 'onChange',
@@ -33,6 +50,7 @@ export default function SignIn() {
   });
 
   //Apis
+  //TODO: Put this api call in authcontext
   const [signIn] = useSignInMutation();
 
   const {handleSubmit} = methods;
@@ -49,6 +67,28 @@ export default function SignIn() {
     [signIn],
   );
 
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      const response = await GoogleLogin();
+      const {idToken, user} = response;
+
+      if (idToken) {
+        const resp = await authAPI.validateToken({
+          token: idToken,
+          email: user.email,
+        });
+        console.log(resp);
+      }
+    } catch (apiError) {
+      console.log({apiError});
+      setError(
+        apiError?.response?.data?.error?.message || 'Something went wrong',
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return (
     <FormProvider {...methods}>
       <KeyboardAwareScrollView
@@ -63,6 +103,9 @@ export default function SignIn() {
           <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
             <Text color={'white'}>Submit</Text>
           </Button>
+          <Pressable onPress={handleGoogleLogin}>
+            <Text>Google Login</Text>
+          </Pressable>
         </View>
         <Text>
           Didn't have a account?{' '}

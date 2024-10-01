@@ -1,4 +1,4 @@
-package com.expensetracker
+package com.expensesniffer
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

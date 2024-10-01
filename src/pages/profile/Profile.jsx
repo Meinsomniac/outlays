@@ -1,6 +1,17 @@
-import React from 'react';
+import {Button, View} from 'native-base';
+import React, {useCallback, useContext} from 'react';
 import {Text} from 'react-native';
+import {AuthContext} from '../../contexts/AuthContext';
 
 export const Profile = () => {
-  return <Text>Profile</Text>;
+  const {logout} = useContext(AuthContext);
+
+  const handleLogout = useCallback(() => {
+    logout();
+  }, []);
+  return (
+    <View>
+      <Button onPress={handleLogout}>logout</Button>
+    </View>
+  );
 };
