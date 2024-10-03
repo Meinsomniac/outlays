@@ -9,5 +9,9 @@ export const apiRoutes = {
       url: '/sign-in',
       method: 'POST',
     },
+    signInWithGoogle: {
+      url: '/google-signin',
+      method: 'POST',
+    },
   },
 };

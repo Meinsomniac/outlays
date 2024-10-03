@@ -7,13 +7,20 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import {validations} from '../../utils/commonValidations';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useSignInMutation} from '../../redux/auth/authActions';
+import {
+  useSignInMutation,
+  useSignInWithGoogleMutation,
+} from '../../redux/auth/authActions';
 import {Link, useNavigation} from '@react-navigation/native';
 import {paths} from '../../routes/paths';
 import {setUserDetails} from '../../redux/auth/authSlice';
 import {useDispatch} from 'react-redux';
 import {setStorage} from '../../utils/storageUtils';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  statusCodes,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 
 const SignInSchema = Yup.object().shape({
   email: validations.email(),
@@ -25,9 +32,9 @@ GoogleSignin.configure({
 });
 
 const GoogleLogin = async () => {
-  await GoogleSignin.hasPlayServices().then(has => console.log(has));
+  await GoogleSignin.hasPlayServices();
+  await GoogleSignin.signOut();
   const userInfo = await GoogleSignin.signIn();
-  console.log('here', userInfo);
   return userInfo;
 };
 
@@ -52,6 +59,7 @@ export default function SignIn() {
   //Apis
   //TODO: Put this api call in authcontext
   const [signIn] = useSignInMutation();
+  const [signInWithGoogle] = useSignInWithGoogleMutation();
 
   const {handleSubmit} = methods;
 
@@ -70,17 +78,13 @@ export default function SignIn() {
   const handleGoogleLogin = useCallback(async () => {
     try {
       const response = await GoogleLogin();
-      const {idToken, user} = response;
+      const {idToken, user} = response?.data;
 
       if (idToken) {
-        const resp = await authAPI.validateToken({
-          token: idToken,
-          email: user.email,
-        });
-        console.log(resp);
+        const resp = await signInWithGoogle({token: idToken});
       }
     } catch (apiError) {
-      console.log({apiError});
+      console.log(apiError, statusCodes);
       setError(
         apiError?.response?.data?.error?.message || 'Something went wrong',
       );
@@ -103,16 +107,21 @@ export default function SignIn() {
           <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
             <Text color={'white'}>Submit</Text>
           </Button>
-          <Pressable onPress={handleGoogleLogin}>
+          {/* <Pressable onPress={handleGoogleLogin}>
             <Text>Google Login</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
-        <Text>
+        <Text fontSize={16}>
           Didn't have a account?{' '}
           <Link to={{screen: paths.signUp}} style={styles.linkStyle}>
             Sign up
           </Link>
         </Text>
+        <Text>Or</Text>
+        <GoogleSigninButton
+          onPress={handleGoogleLogin}
+          style={styles.googleBtn}
+        />
       </KeyboardAwareScrollView>
     </FormProvider>
   );
@@ -142,6 +151,11 @@ const styles = StyleSheet.create({
   },
   linkStyle: {
     textDecorationLine: 'underline',
-    textDecorationColor: '#7F3DFF',
+    textDecorationColor: 'blue',
+    color: 'blue',
+    fontSize: 16,
+  },
+  googleBtn: {
+    width: '80%',
   },
 });

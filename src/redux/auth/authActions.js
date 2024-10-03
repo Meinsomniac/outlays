@@ -11,14 +11,27 @@ const authApi = api.injectEndpoints({
       }),
       transformResponse: res => res,
     }),
-    signIn:builder.mutation({
-      query:(body) => ({
+    signIn: builder.mutation({
+      query: body => ({
         url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signIn.url,
         method: apiRoutes.AUTHENTICATION.signIn.method,
         body,
-      })
-    })
+      }),
+      transformResponse: res => res,
+    }),
+    signInWithGoogle: builder.mutation({
+      query: body => ({
+        url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signInWithGoogle.url,
+        method: apiRoutes.AUTHENTICATION.signInWithGoogle.method,
+        body,
+      }),
+      transformResponse: res => res,
+    }),
   }),
 });
 
-export const {useSignUpMutation,useSignInMutation} = authApi;
+export const {
+  useSignUpMutation,
+  useSignInMutation,
+  useSignInWithGoogleMutation,
+} = authApi;
