@@ -6,12 +6,9 @@ import {AuthContext} from '../../contexts/AuthContext';
 export const Profile = () => {
   const {logout} = useContext(AuthContext);
 
-  const handleLogout = useCallback(() => {
-    logout();
-  }, []);
   return (
     <View>
-      <Button onPress={handleLogout}>logout</Button>
+      <Button onPress={logout}>logout</Button>
     </View>
   );
 };

@@ -1,18 +1,18 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {lazy} from 'react';
-import CustomizedBottomTabs from './CustomizedBottomTabs';
+// import CustomizedBottomTabs from './CustomizedBottomTabs';
 import {AddExpensePage} from '../pages/common/AddExpensePage';
-import SignUp from '../pages/auth/SignUp';
+// import SignUp from '../pages/auth/SignUp';
 import AuthProvider from '../contexts/AuthContext';
 import {Loadable} from '../components/constants/ReactLazyLoading';
 import {paths} from './paths';
 import SignIn from '../pages/auth/SignIn';
 
-// const SignUp = Loadable(lazy(() => import('../pages/auth/SignUp')));
-// const CustomizedBottomTabs = Loadable(
-//   lazy(() => import('./CustomizedBottomTabs')),
-// );
+const SignUp = Loadable(lazy(() => import('../pages/auth/SignUp')));
+const CustomizedBottomTabs = Loadable(
+  lazy(() => import('./CustomizedBottomTabs')),
+);
 
 export const AppNavigator = () => {
   const Stack = createNativeStackNavigator();

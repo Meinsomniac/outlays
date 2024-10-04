@@ -67,7 +67,10 @@ export const AddExpenseSheet = () => {
               size={'lg'}
               style={styles.imageStyle}
             />
-            <Button style={styles.uploadCancel} size={6}>
+            <Button
+              style={styles.uploadCancel}
+              size={6}
+              onPress={() => setFileResponse([])}>
               <Iconify icon="basil:cross-solid" size={24} color={'white'} />
             </Button>
           </View>

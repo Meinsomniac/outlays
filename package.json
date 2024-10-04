@@ -27,6 +27,7 @@
     "react-native-document-picker": "^9.3.1",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-iconify": "^0.2.10",
+    "react-native-image-picker": "^5.7.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-paper": "^5.12.5",
     "react-native-reanimated": "^3.15.4",

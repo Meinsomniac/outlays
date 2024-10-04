@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import DocumentPicker from 'react-native-document-picker';
 import {Iconify} from 'react-native-iconify';
+import {launchCamera} from 'react-native-image-picker';
 
 export const UploadSheet = ({payload}) => {
   const {setFileResponse, setValue, name} = payload; // use the same setter name when using from different modules
@@ -23,7 +24,9 @@ export const UploadSheet = ({payload}) => {
           width={32}
         />
       ),
-      onClick: () => console.log('camera'),
+      onClick: () => {
+        handleCamera();
+      },
     },
     {
       title: 'Image',
@@ -59,6 +62,30 @@ export const UploadSheet = ({payload}) => {
     },
   ];
   //Functions
+  const handleCamera = useCallback(async () => {
+    try {
+      launchCamera(
+        {
+          mediaType: 'photo',
+          includeExtra: true,
+          quality: 0.5,
+        },
+        response => {
+          const {assets, errorMessage} = response;
+          if (errorMessage) {
+            console.log(errorMessage);
+          } else {
+            setFileResponse(assets);
+            setValue(name, assets);
+            sheetRef.current.hide();
+          }
+        },
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
   const handleDocumentSelection = useCallback(async type => {
     try {
       const response = await DocumentPicker.pick({

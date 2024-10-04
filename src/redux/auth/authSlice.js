@@ -8,7 +8,9 @@ export const authSlice = createSlice({
     userDetails: {},
   },
   reducers: {
-    setUserDetails: (state, {payload}) => (state.userDetails = payload),
+    setUserDetails: (state, {payload}) => {
+      state.userDetails = payload;
+    },
   },
 });
 

@@ -1,5 +1,5 @@
 import {Button, Text, View} from 'native-base';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import {RHFTextField} from '../../components/form/RHFTextField';
 import {FormProvider, useForm} from 'react-hook-form';
@@ -21,6 +21,7 @@ import {
   statusCodes,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import {AuthContext} from '../../contexts/AuthContext';
 
 const SignInSchema = Yup.object().shape({
   email: validations.email(),
@@ -39,6 +40,9 @@ const GoogleLogin = async () => {
 };
 
 export default function SignIn() {
+  //Context
+  const {setIsAuthenticated} = useContext(AuthContext);
+
   //Local States
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -79,12 +83,14 @@ export default function SignIn() {
     try {
       const response = await GoogleLogin();
       const {idToken, user} = response?.data;
-
       if (idToken) {
         const resp = await signInWithGoogle({token: idToken});
+        if (resp.data) {
+          await setStorage('token', resp?.data?.accessToken);
+          setIsAuthenticated(true);
+        }
       }
     } catch (apiError) {
-      console.log(apiError, statusCodes);
       setError(
         apiError?.response?.data?.error?.message || 'Something went wrong',
       );

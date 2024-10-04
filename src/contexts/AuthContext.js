@@ -7,9 +7,10 @@ import {setUserDetails} from '../redux/auth/authSlice';
 
 export const AuthContext = createContext({
   logout: () => Promise.resolve(),
+  setIsAuthenticated: () => Promise.resolve(),
 });
 export default function AuthProvider({children}) {
-  const [isAuthenticated, setIsAuthenticated] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   //Global State
   const {navigate} = useNavigation();
   const dispatch = useDispatch();
@@ -17,11 +18,12 @@ export default function AuthProvider({children}) {
   //functions
   const checkToken = useCallback(async () => {
     const accessToken = await getStorage('token');
-    if (!accessToken || !isAuthenticated) navigate(paths.signIn);
-    else {
+    if (!accessToken && !isAuthenticated) {
+      navigate(paths.signIn);
+    } else {
       navigate(paths.home);
     }
-  }, [navigate]);
+  }, [navigate, isAuthenticated]);
 
   const logout = useCallback(async () => {
     await removeStorage('token');
@@ -34,6 +36,8 @@ export default function AuthProvider({children}) {
   }, [checkToken]);
 
   return (
-    <AuthContext.Provider value={{logout}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{logout, setIsAuthenticated}}>
+      {children}
+    </AuthContext.Provider>
   );
 }

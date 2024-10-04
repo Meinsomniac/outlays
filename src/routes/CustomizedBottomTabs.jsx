@@ -20,8 +20,7 @@ export default function CustomizedBottomTabs({navigation}) {
         icon: <Iconify icon={'uil:money-withdraw'} color="#fff" size={35} />,
         style: {
           backgroundColor: '#00A86B',
-          left: 0,
-          bottom: 32,
+          bottom: 30,
           zIndex: 0,
         },
         data: {
@@ -45,8 +44,7 @@ export default function CustomizedBottomTabs({navigation}) {
         icon: <Iconify icon={'uil:money-insert'} color="#fff" size={35} />,
         style: {
           backgroundColor: '#FD3C4A',
-          right: 0,
-          bottom: 32,
+          bottom: 30,
           zIndex: 0,
         },
         data: {
@@ -76,7 +74,7 @@ export default function CustomizedBottomTabs({navigation}) {
         ),
         style: {
           backgroundColor: '#0077FF',
-          bottom: 32,
+          bottom: 30,
           zIndex: 0,
         },
         position: {
