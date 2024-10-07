@@ -8,7 +8,7 @@ export const Profile = () => {
 
   return (
     <View>
-      <Button onPress={logout}>logout</Button>
+      <Button onPress={() => logout()}>logout</Button>
     </View>
   );
 };

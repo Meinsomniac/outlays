@@ -63,7 +63,7 @@ export default function SignIn() {
   //Apis
   //TODO: Put this api call in authcontext
   const [signIn] = useSignInMutation();
-  const [signInWithGoogle] = useSignInWithGoogleMutation();
+  const [signInWithGoogle, {isLoading}] = useSignInWithGoogleMutation();
 
   const {handleSubmit} = methods;
 

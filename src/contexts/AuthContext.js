@@ -26,9 +26,9 @@ export default function AuthProvider({children}) {
   }, [navigate, isAuthenticated]);
 
   const logout = useCallback(async () => {
-    await removeStorage('token');
     dispatch(setUserDetails({}));
     setIsAuthenticated(false);
+    await removeStorage('token');
   });
 
   useEffect(() => {

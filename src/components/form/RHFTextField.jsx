@@ -3,7 +3,13 @@ import {FormControl, Input, WarningOutlineIcon} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {defaultStyles} from '../../constants/defaultStyles';
 
-export function RHFTextField({name, ...other}) {
+export function RHFTextField({
+  name,
+  customStyle,
+  placeholderColor,
+  variant,
+  ...other
+}) {
   const {control} = useFormContext();
   return (
     <Controller
@@ -13,14 +19,12 @@ export function RHFTextField({name, ...other}) {
         <>
           <FormControl isInvalid={!!error?.message} padding={0}>
             <Input
-              _input={() => ({
-                borderColor: 'red',
-              })}
               {...field}
               onChangeText={field.onChange}
-              style={defaultStyles.default}
-              variant={'outline'}
+              style={[defaultStyles.default, customStyle]}
+              variant={variant || 'outline'}
               borderRadius={10}
+              placeholderTextColor={placeholderColor}
               {...other}
             />
             <FormControl.ErrorMessage

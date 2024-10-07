@@ -1,14 +1,17 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 import {AddExpenseSheet} from '../../sheets/AddExpenseSheet';
-import {KeyboardAvoidingView} from 'native-base';
+import {KeyboardAvoidingView, Text} from 'native-base';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {RHFTextField} from '../../components/form/RHFTextField';
+import {position} from 'native-base/lib/typescript/theme/styled-system';
+import {isNumber} from '../../utils/common';
 
 const defaultValues = {
-  // amount: '',
+  amount: '',
   category: '',
   description: '',
   wallet: '',
@@ -18,7 +21,7 @@ const defaultValues = {
 
 export const AddExpensePage = ({route}) => {
   const AddExpenseSchema = Yup.object().shape({
-    // amount: Yup.number().required(),
+    amount: Yup.string().required(),
     category: Yup.string().required(),
     description: Yup.string().required(),
     wallet: Yup.string().required(),
@@ -32,6 +35,7 @@ export const AddExpensePage = ({route}) => {
     resolver: yupResolver(AddExpenseSchema),
     defaultValues,
   });
+
   return (
     <>
       <StatusBar
@@ -41,10 +45,20 @@ export const AddExpensePage = ({route}) => {
       />
       <FormProvider {...methods}>
         <View style={styles.body({color: route?.params?.color})}>
-          <View style={styles.amount}>
-            <RHFTextField name={'amount'} />
-            <AddExpenseSheet />
+          <View style={styles.amountContainer}>
+            <Text color={'gray.200'} fontSize={18} paddingX={5}>
+              How much?
+            </Text>
+            <RHFTextField
+              name={'amount'}
+              customStyle={styles.amount}
+              variant={'unstyled'}
+              placeholder={'$0.00'}
+              placeholderColor={'white'}
+              onKeyPress={isNumber}
+            />
           </View>
+          <AddExpenseSheet />
         </View>
       </FormProvider>
     </>
@@ -54,10 +68,20 @@ export const AddExpensePage = ({route}) => {
 const styles = StyleSheet.create({
   body: ({color}) => ({
     flex: 1,
+    position: 'relative',
     ...(color && {backgroundColor: color}),
   }),
   amount: {
-    flexDirection: 'column-reverse',
-    flexGrow: 1,
+    // display: 'none',
+    position: 'relative',
+    fontSize: 50,
+    height: 100,
+    borderWidth: 0,
+    lineHeight: 60,
+    color: 'white',
+  },
+  amountContainer: {
+    flexDirection: 'column',
+    rowGap: 0,
   },
 });

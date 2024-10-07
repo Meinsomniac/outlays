@@ -1,5 +1,5 @@
 import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {RHFSelect} from '../components/form/RHFSelect';
 import {RHFTextField} from '../components/form/RHFTextField';
@@ -9,8 +9,8 @@ import {RHFSwitch} from '../components/form/RHFSwitch';
 import {useFormContext} from 'react-hook-form';
 
 export const AddExpenseSheet = () => {
-  const sheetRef = useRef(null);
   const [fileResponse, setFileResponse] = useState([]);
+  const sheetRef = useRef(null);
 
   useLayoutEffect(() => {
     sheetRef?.current?.show();
@@ -25,86 +25,89 @@ export const AddExpenseSheet = () => {
   }, []);
 
   return (
-    <ActionSheet
-      containerStyle={styles.mainSheetStyle}
-      ref={sheetRef}
-      isModal={false}
-      closable={false}
-      backgroundInteractionEnabled={true}
-      keyboardHandlerEnabled={false}>
-      <View style={styles.spacing}>
-        <RHFSelect
-          name={'category'}
-          placeholder={'Select a Category'}
-          options={[
-            {
-              title: 'Movie',
-              value: 'movie',
-            },
-          ]}
-        />
-        <RHFTextField name={'description'} placeholder={'Description'} />
-        <RHFSelect
-          name={'wallet'}
-          placeholder={'Wallet'}
-          addOptionLabel={'Add a wallet'}
-          options={[
-            {
-              title: 'PayPal',
-              value: 'paypal',
-            },
-          ]}
-        />
-        {fileResponse?.length ? (
-          <View style={styles.imageContainer}>
-            <Image
-              src={fileResponse?.[0]?.uri}
-              alt={
-                fileResponse?.[0]?.type?.includes('image')
-                  ? 'Image'
-                  : 'Document'
-              }
-              size={'lg'}
-              style={styles.imageStyle}
-            />
+    <ScrollView contentContainerStyle={{flex: 1}}>
+      <ActionSheet
+        containerStyle={styles.mainSheetStyle}
+        ref={sheetRef}
+        isModal={false}
+        closable={false}
+        backgroundInteractionEnabled={true}
+        keyboardHandlerEnabled={false}
+        extraScrollHeight={0}>
+        <View style={styles.spacing}>
+          <RHFSelect
+            name={'category'}
+            placeholder={'Select a Category'}
+            options={[
+              {
+                title: 'Movie',
+                value: 'movie',
+              },
+            ]}
+          />
+          <RHFTextField name={'description'} placeholder={'Description'} />
+          <RHFSelect
+            name={'wallet'}
+            placeholder={'Wallet'}
+            addOptionLabel={'Add a wallet'}
+            options={[
+              {
+                title: 'PayPal',
+                value: 'paypal',
+              },
+            ]}
+          />
+          {fileResponse?.length ? (
+            <View style={styles.imageContainer}>
+              <Image
+                src={fileResponse?.[0]?.uri}
+                alt={
+                  fileResponse?.[0]?.type?.includes('image')
+                    ? 'Image'
+                    : 'Document'
+                }
+                size={'lg'}
+                style={styles.imageStyle}
+              />
+              <Button
+                style={styles.uploadCancel}
+                size={6}
+                onPress={() => setFileResponse([])}>
+                <Iconify icon="basil:cross-solid" size={24} color={'white'} />
+              </Button>
+            </View>
+          ) : (
             <Button
-              style={styles.uploadCancel}
-              size={6}
-              onPress={() => setFileResponse([])}>
-              <Iconify icon="basil:cross-solid" size={24} color={'white'} />
+              variant={'unstyled'}
+              style={styles.attachmentButton}
+              onPress={() =>
+                SheetManager.show('upload-sheet', {
+                  payload: {
+                    fileResponse,
+                    setFileResponse,
+                    name: 'file',
+                    setValue,
+                  },
+                })
+              }>
+              <Text style={styles.attachmentTitle}>Add Attachment</Text>
             </Button>
+          )}
+          <View style={styles.repeat}>
+            <View style={styles.repeatText}>
+              <Text fontSize={16}>Repeat</Text>
+              <Text variant={'p'} color={'gray.400'}>
+                Repeat Transaction
+              </Text>
+            </View>
+            <RHFSwitch name={'repeat'} />
           </View>
-        ) : (
-          <Button
-            variant={'unstyled'}
-            style={styles.attachmentButton}
-            onPress={() =>
-              SheetManager.show('upload-sheet', {
-                payload: {
-                  fileResponse,
-                  setFileResponse,
-                  name: 'file',
-                  setValue,
-                },
-              })
-            }>
-            <Text style={styles.attachmentTitle}>Add Attachment</Text>
+          <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
+            <Text color={'white'}>Continue</Text>
           </Button>
-        )}
-        <View style={styles.repeat}>
-          <View style={styles.repeatText}>
-            <Text fontSize={16}>Repeat</Text>
-            <Text variant={'p'} color={'gray.400'}>
-              Repeat Transaction
-            </Text>
-          </View>
-          <RHFSwitch name={'repeat'} />
         </View>
-        <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
-          <Text color={'white'}>Continue</Text>
-        </Button>
-      </View>
-    </ActionSheet>
+      </ActionSheet>
+    </ScrollView>
   );
 };
 
