@@ -6,7 +6,6 @@ import {paths} from '../routes/paths';
 import {setUserDetails} from '../redux/auth/authSlice';
 
 export const AuthContext = createContext({
-  logout: () => Promise.resolve(),
   setIsAuthenticated: () => Promise.resolve(),
 });
 export default function AuthProvider({children}) {
@@ -33,7 +32,7 @@ export default function AuthProvider({children}) {
 
   useEffect(() => {
     checkToken();
-  }, [checkToken]);
+  }, [checkToken, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{logout, setIsAuthenticated}}>

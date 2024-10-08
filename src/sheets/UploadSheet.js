@@ -6,6 +6,7 @@ import ActionSheet from 'react-native-actions-sheet';
 import DocumentPicker from 'react-native-document-picker';
 import {Iconify} from 'react-native-iconify';
 import {launchCamera} from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
 
 export const UploadSheet = ({payload}) => {
   const {setFileResponse, setValue, name} = payload; // use the same setter name when using from different modules
@@ -67,16 +68,17 @@ export const UploadSheet = ({payload}) => {
       launchCamera(
         {
           mediaType: 'photo',
-          includeExtra: true,
           quality: 0.5,
+          includeBase64: false,
+          includeExtra: true,
         },
         response => {
           const {assets, errorMessage} = response;
           if (errorMessage) {
             console.log(errorMessage);
           } else {
-            setFileResponse(assets);
-            setValue(name, assets);
+            setFileResponse(assets?.[0]);
+            setValue(name, assets?.[0]);
             sheetRef.current.hide();
           }
         },
@@ -88,7 +90,7 @@ export const UploadSheet = ({payload}) => {
 
   const handleDocumentSelection = useCallback(async type => {
     try {
-      const response = await DocumentPicker.pick({
+      const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
         type,
       });

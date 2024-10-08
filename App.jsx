@@ -19,6 +19,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {NativeBaseProvider} from 'native-base';
 import {Provider} from 'react-redux';
 import {store} from './src/redux';
+import {AlertProvider} from './src/contexts/AlertContext';
 
 function App() {
   return (
@@ -26,7 +27,9 @@ function App() {
       <Provider store={store}>
         <NativeBaseProvider>
           <SheetProvider>
-            <AppNavigator />
+            <AlertProvider>
+              <AppNavigator />
+            </AlertProvider>
           </SheetProvider>
         </NativeBaseProvider>
       </Provider>

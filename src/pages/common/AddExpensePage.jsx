@@ -9,6 +9,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {RHFTextField} from '../../components/form/RHFTextField';
 import {position} from 'native-base/lib/typescript/theme/styled-system';
 import {isNumber} from '../../utils/common';
+import {Iconify} from 'react-native-iconify';
 
 const defaultValues = {
   amount: '',
@@ -25,7 +26,7 @@ export const AddExpensePage = ({route}) => {
     category: Yup.string().required(),
     description: Yup.string().required(),
     wallet: Yup.string().required(),
-    file: Yup.array().required(),
+    file: Yup.object().required(),
     repeat: Yup.bool(),
   });
 
@@ -53,9 +54,13 @@ export const AddExpensePage = ({route}) => {
               name={'amount'}
               customStyle={styles.amount}
               variant={'unstyled'}
-              placeholder={'$0.00'}
+              placeholder={'0.00'}
               placeholderColor={'white'}
-              onKeyPress={isNumber}
+              keyboardType="numeric"
+              selectionColor="white"
+              leftElement={
+                <Iconify icon="mdi:rupee" color={'white'} size={50} />
+              }
             />
           </View>
           <AddExpenseSheet />
@@ -72,8 +77,6 @@ const styles = StyleSheet.create({
     ...(color && {backgroundColor: color}),
   }),
   amount: {
-    // display: 'none',
-    position: 'relative',
     fontSize: 50,
     height: 100,
     borderWidth: 0,

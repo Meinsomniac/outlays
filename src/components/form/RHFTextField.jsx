@@ -8,6 +8,7 @@ export function RHFTextField({
   customStyle,
   placeholderColor,
   variant,
+  leftElement,
   ...other
 }) {
   const {control} = useFormContext();
@@ -25,6 +26,8 @@ export function RHFTextField({
               variant={variant || 'outline'}
               borderRadius={10}
               placeholderTextColor={placeholderColor}
+              leftElement={leftElement}
+              cursorColor={'white'}
               {...other}
             />
             <FormControl.ErrorMessage

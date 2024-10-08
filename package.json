@@ -25,6 +25,7 @@
     "react-native-actions-sheet": "^0.9.7",
     "react-native-curved-bottom-bar": "^3.3.1",
     "react-native-document-picker": "^9.3.1",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-iconify": "^0.2.10",
     "react-native-image-picker": "^5.7.0",

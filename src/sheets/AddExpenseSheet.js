@@ -1,27 +1,64 @@
-import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {RHFSelect} from '../components/form/RHFSelect';
 import {RHFTextField} from '../components/form/RHFTextField';
-import {Button, Image, Text} from 'native-base';
+import {Alert, Button, Image, Text} from 'native-base';
 import {Iconify} from 'react-native-iconify';
 import {RHFSwitch} from '../components/form/RHFSwitch';
 import {useFormContext} from 'react-hook-form';
+import {useAddExpenseMutation} from '../redux/expense/expenseActions';
+import {getStorage} from '../utils/storageUtils';
+import {AlertContext} from '../contexts/AlertContext';
 
 export const AddExpenseSheet = () => {
-  const [fileResponse, setFileResponse] = useState([]);
+  //Local States
+  const [fileResponse, setFileResponse] = useState(null);
   const sheetRef = useRef(null);
+
+  const {handleSubmit, setValue} = useFormContext();
+  const {showAlert} = useContext(AlertContext);
+
+  //Api calls
+  const [addExpense, {isLoading}] = useAddExpenseMutation();
+
+  //Functions
+  const onSubmit = useCallback(async values => {
+    const formData = new FormData();
+    Object.entries(values)?.forEach(([key, value]) => {
+      if (key === 'file') {
+        formData.append(key, {
+          name: values?.file?.name || values?.file?.fileName,
+          type: values?.file?.type,
+          uri: values?.file?.uri,
+        });
+      } else formData.append(key, value);
+    });
+    const response = await addExpense(formData);
+    if (response?.data) {
+      showAlert({
+        title: response?.data?.message,
+        duration: 120,
+      });
+    } else {
+      showAlert({
+        title: response?.error?.message,
+        status: 'error',
+        duration: 120,
+      });
+    }
+  }, []);
 
   useLayoutEffect(() => {
     sheetRef?.current?.show();
     return () => sheetRef?.current?.hide();
-  }, []);
-
-  const {handleSubmit, setValue} = useFormContext();
-
-  //Functions
-  const onSubmit = useCallback(async values => {
-    console.log({values});
   }, []);
 
   return (
@@ -57,14 +94,12 @@ export const AddExpenseSheet = () => {
               },
             ]}
           />
-          {fileResponse?.length ? (
+          {fileResponse ? (
             <View style={styles.imageContainer}>
               <Image
-                src={fileResponse?.[0]?.uri}
+                src={fileResponse?.uri}
                 alt={
-                  fileResponse?.[0]?.type?.includes('image')
-                    ? 'Image'
-                    : 'Document'
+                  fileResponse?.type?.includes('image') ? 'Image' : 'Document'
                 }
                 size={'lg'}
                 style={styles.imageStyle}
@@ -72,7 +107,7 @@ export const AddExpenseSheet = () => {
               <Button
                 style={styles.uploadCancel}
                 size={6}
-                onPress={() => setFileResponse([])}>
+                onPress={() => setFileResponse(null)}>
                 <Iconify icon="basil:cross-solid" size={24} color={'white'} />
               </Button>
             </View>
@@ -102,7 +137,10 @@ export const AddExpenseSheet = () => {
             </View>
             <RHFSwitch name={'repeat'} />
           </View>
-          <Button onPress={handleSubmit(onSubmit)} style={styles.continueBtn}>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            style={styles.continueBtn}
+            isLoading={isLoading}>
             <Text color={'white'}>Continue</Text>
           </Button>
         </View>
