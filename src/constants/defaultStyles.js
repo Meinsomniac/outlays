@@ -6,6 +6,7 @@ export const defaultStyles = StyleSheet.create({
     lineHeight: 25,
     borderRadius: 20,
     fontSize: 14,
+    width: '100%',
   },
   mainLoader: {
     flex: 1,

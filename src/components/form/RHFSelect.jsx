@@ -12,7 +12,7 @@ export function RHFSelect({name, options, placeholder, addOptionLabel}) {
       name={name}
       control={control}
       render={({field, fieldState: {error}}) => (
-        <>
+        <FormControl isInvalid={!!error?.message}>
           <Select
             selectedValue={field.value}
             onValueChange={field.onChange}
@@ -53,11 +53,14 @@ export function RHFSelect({name, options, placeholder, addOptionLabel}) {
           </Select>
           {error?.message && (
             <FormControl.ErrorMessage
+              padding={0}
+              margin={0}
+              color={'amber.600'}
               leftIcon={<WarningOutlineIcon size="xs" />}>
               {error?.message}
             </FormControl.ErrorMessage>
           )}
-        </>
+        </FormControl>
       )}
     />
   );

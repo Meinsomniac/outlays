@@ -6,12 +6,18 @@ import {Home} from '../pages/auth/Home';
 import {Transactions} from '../pages/transactions/Transactions';
 import {Budget} from '../pages/budget/Budget';
 import {Profile} from '../pages/profile/Profile';
+import {useSpinAnimation} from '../utils/useAnimations';
 // import {myEventEmitter} from '../constants/EventEmitter';
 
 const bottomTabDefaultColor = 'rgb(127,61,255)';
 export default function CustomizedBottomTabs({navigation}) {
   // Local State
   const [isCircleClicked, setIsCircleClicked] = useState(false);
+  const [spinValue, startSpin] = useSpinAnimation({
+    value: 0,
+    outputRange: ['0deg', '90deg'],
+    reversible: true,
+  });
   const extraCircleButtons = useMemo(() => {
     return [
       {
@@ -96,6 +102,7 @@ export default function CustomizedBottomTabs({navigation}) {
   }, []);
 
   const onCircleClicked = () => {
+    startSpin();
     setIsCircleClicked(prev => !prev);
   };
   const _renderIcon = (routeName, selectedTab) => {
@@ -174,7 +181,13 @@ export default function CustomizedBottomTabs({navigation}) {
       borderTopLeftRight
       renderCircle={() => (
         <View style={styles.circlesContainer}>
-          <Animated.View style={styles.btnCircleUp}>
+          <Animated.View
+            style={[
+              styles.btnCircleUp,
+              {
+                transform: [{rotate: spinValue}],
+              },
+            ]}>
             <TouchableOpacity style={styles.button} onPress={onCircleClicked}>
               <Iconify icon={'fluent:add-28-filled'} color="#fff" size={30} />
             </TouchableOpacity>

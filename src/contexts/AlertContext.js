@@ -1,14 +1,14 @@
 import {Alert, Button, HStack, Text, VStack} from 'native-base';
 import {createContext, useCallback, useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
-import {delay, getAlertIcon, getIcon} from '../utils/common';
+import {delay, getAlertIcon} from '../utils/common';
 import {Iconify} from 'react-native-iconify';
 
 const defaultOptions = {
   variant: 'subtle',
   status: 'success',
   colorScheme: 'success',
-  duration: 0,
+  duration: 3,
 };
 export const AlertContext = createContext({
   showAlert: ({
@@ -23,11 +23,14 @@ export const AlertContext = createContext({
 });
 export const AlertProvider = ({children}) => {
   const [options, setOptions] = useState(defaultOptions);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   const showAlert = useCallback(
-    ({position, title, description, duration, ...others}) => {
-      setOptions({duration, title, description, ...others});
+    args => {
+      setOptions(prev => ({
+        ...prev,
+        ...args,
+      }));
       setVisible(true);
     },
     [setOptions],
@@ -38,9 +41,10 @@ export const AlertProvider = ({children}) => {
       (async () => {
         await delay(options?.duration);
         setVisible(false);
+        setOptions(defaultOptions);
       })();
     }
-  }, [options?.duration, visible]);
+  }, [visible]);
 
   return (
     <AlertContext.Provider

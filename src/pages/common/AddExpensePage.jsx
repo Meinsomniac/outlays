@@ -16,24 +16,29 @@ const defaultValues = {
   category: '',
   description: '',
   wallet: '',
-  file: '',
   repeat: false,
+  from: '',
+  to: '',
 };
 
 export const AddExpensePage = ({route}) => {
   const AddExpenseSchema = Yup.object().shape({
     amount: Yup.string().required(),
-    category: Yup.string().required(),
     description: Yup.string().required(),
-    wallet: Yup.string().required(),
-    file: Yup.object().required(),
-    repeat: Yup.bool(),
+    ...(route?.params?.title?.toLowerCase() === 'transfer'
+      ? {from: Yup.string().required(), to: Yup.string().required()}
+      : {
+          repeat: Yup.bool(),
+          wallet: Yup.string().required(),
+          category: Yup.string().required(),
+        }),
   });
 
   const methods = useForm({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: yupResolver(AddExpenseSchema),
+    shouldFocusError: false,
     defaultValues,
   });
 
@@ -58,12 +63,13 @@ export const AddExpensePage = ({route}) => {
               placeholderColor={'white'}
               keyboardType="numeric"
               selectionColor="white"
+              cursorColor={'white'}
               leftElement={
                 <Iconify icon="mdi:rupee" color={'white'} size={50} />
               }
             />
           </View>
-          <AddExpenseSheet />
+          <AddExpenseSheet type={route?.params?.title} />
         </View>
       </FormProvider>
     </>
@@ -85,6 +91,5 @@ const styles = StyleSheet.create({
   },
   amountContainer: {
     flexDirection: 'column',
-    rowGap: 0,
   },
 });

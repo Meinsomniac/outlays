@@ -6,24 +6,29 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {RHFSelect} from '../components/form/RHFSelect';
 import {RHFTextField} from '../components/form/RHFTextField';
-import {Alert, Button, Image, Text} from 'native-base';
+import {Button, Image, Text} from 'native-base';
 import {Iconify} from 'react-native-iconify';
 import {RHFSwitch} from '../components/form/RHFSwitch';
 import {useFormContext} from 'react-hook-form';
 import {useAddExpenseMutation} from '../redux/expense/expenseActions';
 import {getStorage} from '../utils/storageUtils';
 import {AlertContext} from '../contexts/AlertContext';
+import {useSpinAnimation} from '../utils/useAnimations';
 
-export const AddExpenseSheet = () => {
+export const AddExpenseSheet = ({type}) => {
   //Local States
   const [fileResponse, setFileResponse] = useState(null);
   const sheetRef = useRef(null);
+  const isTransfer = type?.toLowerCase() === 'transfer';
+  const [spinValue, startSpin] = useSpinAnimation({
+    value: 0,
+  });
 
-  const {handleSubmit, setValue} = useFormContext();
+  const {handleSubmit, setValue, reset, watch} = useFormContext();
   const {showAlert} = useContext(AlertContext);
 
   //Api calls
@@ -41,20 +46,37 @@ export const AddExpenseSheet = () => {
         });
       } else formData.append(key, value);
     });
+    formData?.append('type', type?.toLowerCase0);
     const response = await addExpense(formData);
     if (response?.data) {
       showAlert({
         title: response?.data?.message,
-        duration: 120,
+      });
+      reset({
+        amount: '',
+        category: '',
+        description: '',
+        wallet: '',
+        repeat: false,
+        file: '',
+        from: '',
+        to: '',
       });
     } else {
+      0;
       showAlert({
         title: response?.error?.message,
         status: 'error',
-        duration: 120,
       });
     }
   }, []);
+
+  const swapValues = useCallback(() => {
+    startSpin(1);
+    const temp = watch('from');
+    setValue('from', watch('to'), {shouldValidate: true});
+    setValue('to', temp, {shouldValidate: true});
+  });
 
   useLayoutEffect(() => {
     sheetRef?.current?.show();
@@ -72,28 +94,61 @@ export const AddExpenseSheet = () => {
         keyboardHandlerEnabled={false}
         extraScrollHeight={0}>
         <View style={styles.spacing}>
-          <RHFSelect
-            name={'category'}
-            placeholder={'Select a Category'}
-            options={[
-              {
-                title: 'Movie',
-                value: 'movie',
-              },
-            ]}
-          />
+          {isTransfer ? (
+            <View
+              style={{
+                position: 'relative',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                columnGap: 15,
+                minWidth: '100%',
+              }}>
+              <RHFTextField placeholder={'From'} name={'from'} flexGrow={1} />
+              <RHFTextField placeholder={'To'} name={'to'} flexGrow={1} />
+              <TouchableOpacity
+                style={styles.transfer(spinValue)}
+                activeOpacity={0.8}
+                onPress={swapValues}>
+                <Iconify
+                  icon="solar:transfer-horizontal-bold-duotone"
+                  color={'#7F3DFF'}
+                  size={35}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            ''
+          )}
+          {!isTransfer ? (
+            <RHFSelect
+              name={'category'}
+              placeholder={'Select a Category'}
+              options={[
+                {
+                  title: 'Movie',
+                  value: 'movie',
+                },
+              ]}
+            />
+          ) : (
+            ''
+          )}
           <RHFTextField name={'description'} placeholder={'Description'} />
-          <RHFSelect
-            name={'wallet'}
-            placeholder={'Wallet'}
-            addOptionLabel={'Add a wallet'}
-            options={[
-              {
-                title: 'PayPal',
-                value: 'paypal',
-              },
-            ]}
-          />
+          {!isTransfer ? (
+            <RHFSelect
+              name={'wallet'}
+              placeholder={'Wallet'}
+              addOptionLabel={'Add a wallet'}
+              options={[
+                {
+                  title: 'PayPal',
+                  value: 'paypal',
+                },
+              ]}
+            />
+          ) : (
+            ''
+          )}
           {fileResponse ? (
             <View style={styles.imageContainer}>
               <Image
@@ -128,15 +183,20 @@ export const AddExpenseSheet = () => {
               <Text style={styles.attachmentTitle}>Add Attachment</Text>
             </Button>
           )}
-          <View style={styles.repeat}>
-            <View style={styles.repeatText}>
-              <Text fontSize={16}>Repeat</Text>
-              <Text variant={'p'} color={'gray.400'}>
-                Repeat Transaction
-              </Text>
+          {!isTransfer ? (
+            <View style={styles.repeat}>
+              <View style={styles.repeatText}>
+                <Text fontSize={16}>Repeat</Text>
+                <Text variant={'p'} color={'gray.400'}>
+                  Repeat Transaction
+                </Text>
+              </View>
+              <RHFSwitch name={'repeat'} />
             </View>
-            <RHFSwitch name={'repeat'} />
-          </View>
+          ) : (
+            ''
+          )}
+
           <Button
             onPress={handleSubmit(onSubmit)}
             style={styles.continueBtn}
@@ -201,4 +261,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#7F3DFF',
   },
+  transfer: value => ({
+    padding: 1,
+    borderRadius: 50,
+    borderWidth: 0.5,
+    position: 'absolute',
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    top: 5,
+    transform: [
+      {
+        rotate: value,
+      },
+    ],
+  }),
 });
