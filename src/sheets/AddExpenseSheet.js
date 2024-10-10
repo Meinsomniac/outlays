@@ -18,6 +18,7 @@ import {useAddExpenseMutation} from '../redux/expense/expenseActions';
 import {getStorage} from '../utils/storageUtils';
 import {AlertContext} from '../contexts/AlertContext';
 import {useSpinAnimation} from '../utils/useAnimations';
+import {FrequencySheet} from './FrequencySheet';
 
 export const AddExpenseSheet = ({type}) => {
   //Local States
@@ -36,39 +37,40 @@ export const AddExpenseSheet = ({type}) => {
 
   //Functions
   const onSubmit = useCallback(async values => {
-    const formData = new FormData();
-    Object.entries(values)?.forEach(([key, value]) => {
-      if (key === 'file') {
-        formData.append(key, {
-          name: values?.file?.name || values?.file?.fileName,
-          type: values?.file?.type,
-          uri: values?.file?.uri,
-        });
-      } else formData.append(key, value);
-    });
-    formData?.append('type', type?.toLowerCase0);
-    const response = await addExpense(formData);
-    if (response?.data) {
-      showAlert({
-        title: response?.data?.message,
-      });
-      reset({
-        amount: '',
-        category: '',
-        description: '',
-        wallet: '',
-        repeat: false,
-        file: '',
-        from: '',
-        to: '',
-      });
-    } else {
-      0;
-      showAlert({
-        title: response?.error?.message,
-        status: 'error',
-      });
-    }
+    console.log(values);
+    // const formData = new FormData();
+    // Object.entries(values)?.forEach(([key, value]) => {
+    //   if (key === 'file') {
+    //     formData.append(key, {
+    //       name: values?.file?.name || values?.file?.fileName,
+    //       type: values?.file?.type,
+    //       uri: values?.file?.uri,
+    //     });
+    //   } else formData.append(key, value);
+    // });
+    // formData?.append('type', type?.toLowerCase0);
+    // const response = await addExpense(formData);
+    // if (response?.data) {
+    //   showAlert({
+    //     title: response?.data?.message,
+    //   });
+    //   reset({
+    //     amount: '',
+    //     category: '',
+    //     description: '',
+    //     wallet: '',
+    //     repeat: false,
+    //     file: '',
+    //     from: '',
+    //     to: '',
+    //   });
+    // } else {
+    //   0;
+    //   showAlert({
+    //     title: response?.error?.message,
+    //     status: 'error',
+    //   });
+    // }
   }, []);
 
   const swapValues = useCallback(() => {
@@ -76,136 +78,134 @@ export const AddExpenseSheet = ({type}) => {
     const temp = watch('from');
     setValue('from', watch('to'), {shouldValidate: true});
     setValue('to', temp, {shouldValidate: true});
-  });
+  }, [setValue, startSpin, watch]);
 
   useLayoutEffect(() => {
-    sheetRef?.current?.show();
-    return () => sheetRef?.current?.hide();
+    const sheet = sheetRef?.current;
+    sheet?.show();
+    return () => sheet?.hide();
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={{flex: 1}}>
-      <ActionSheet
-        containerStyle={styles.mainSheetStyle}
-        ref={sheetRef}
-        isModal={false}
-        closable={false}
-        backgroundInteractionEnabled={true}
-        keyboardHandlerEnabled={false}
-        extraScrollHeight={0}>
-        <View style={styles.spacing}>
-          {isTransfer ? (
-            <View
-              style={{
-                position: 'relative',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                columnGap: 15,
-                minWidth: '100%',
-              }}>
-              <RHFTextField placeholder={'From'} name={'from'} flexGrow={1} />
-              <RHFTextField placeholder={'To'} name={'to'} flexGrow={1} />
-              <TouchableOpacity
-                style={styles.transfer(spinValue)}
-                activeOpacity={0.8}
-                onPress={swapValues}>
-                <Iconify
-                  icon="solar:transfer-horizontal-bold-duotone"
-                  color={'#7F3DFF'}
-                  size={35}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            ''
-          )}
-          {!isTransfer ? (
-            <RHFSelect
-              name={'category'}
-              placeholder={'Select a Category'}
-              options={[
-                {
-                  title: 'Movie',
-                  value: 'movie',
-                },
-              ]}
-            />
-          ) : (
-            ''
-          )}
-          <RHFTextField name={'description'} placeholder={'Description'} />
-          {!isTransfer ? (
-            <RHFSelect
-              name={'wallet'}
-              placeholder={'Wallet'}
-              addOptionLabel={'Add a wallet'}
-              options={[
-                {
-                  title: 'PayPal',
-                  value: 'paypal',
-                },
-              ]}
-            />
-          ) : (
-            ''
-          )}
-          {fileResponse ? (
-            <View style={styles.imageContainer}>
-              <Image
-                src={fileResponse?.uri}
-                alt={
-                  fileResponse?.type?.includes('image') ? 'Image' : 'Document'
-                }
-                size={'lg'}
-                style={styles.imageStyle}
-              />
-              <Button
-                style={styles.uploadCancel}
-                size={6}
-                onPress={() => setFileResponse(null)}>
-                <Iconify icon="basil:cross-solid" size={24} color={'white'} />
-              </Button>
-            </View>
-          ) : (
-            <Button
-              variant={'unstyled'}
-              style={styles.attachmentButton}
-              onPress={() =>
-                SheetManager.show('upload-sheet', {
-                  payload: {
-                    fileResponse,
-                    setFileResponse,
-                    name: 'file',
-                    setValue,
-                  },
-                })
-              }>
-              <Text style={styles.attachmentTitle}>Add Attachment</Text>
-            </Button>
-          )}
-          {!isTransfer ? (
-            <View style={styles.repeat}>
-              <View style={styles.repeatText}>
-                <Text fontSize={16}>Repeat</Text>
-                <Text variant={'p'} color={'gray.400'}>
-                  Repeat Transaction
-                </Text>
+    <>
+      <ScrollView contentContainerStyle={{flex: 1}}>
+        <ActionSheet
+          containerStyle={styles.mainSheetStyle}
+          ref={sheetRef}
+          isModal={false}
+          closable={false}
+          backgroundInteractionEnabled={true}
+          keyboardHandlerEnabled={false}
+          extraScrollHeight={0}>
+          <View style={styles.spacing}>
+            {isTransfer ? (
+              <View style={styles.fromTo}>
+                <RHFTextField placeholder={'From'} name={'from'} flexGrow={1} />
+                <RHFTextField placeholder={'To'} name={'to'} flexGrow={1} />
+                <TouchableOpacity
+                  style={styles.transfer(spinValue)}
+                  activeOpacity={0.8}
+                  onPress={swapValues}>
+                  <Iconify
+                    icon="solar:transfer-horizontal-bold-duotone"
+                    color={'#7F3DFF'}
+                    size={35}
+                  />
+                </TouchableOpacity>
               </View>
-              <RHFSwitch name={'repeat'} />
-            </View>
-          ) : (
-            ''
-          )}
+            ) : (
+              ''
+            )}
+            {!isTransfer ? (
+              <RHFSelect
+                name={'category'}
+                placeholder={'Category'}
+                addOptionLabel={'Add a category'}
+                options={[
+                  {
+                    title: 'Movie',
+                    value: 'movie',
+                  },
+                ]}
+              />
+            ) : (
+              ''
+            )}
+            <RHFTextField name={'description'} placeholder={'Description'} />
+            {!isTransfer ? (
+              <RHFSelect
+                name={'wallet'}
+                placeholder={'Wallet'}
+                addOptionLabel={'Add a wallet'}
+                options={[
+                  {
+                    title: 'PayPal',
+                    value: 'paypal',
+                  },
+                ]}
+              />
+            ) : (
+              ''
+            )}
+            {fileResponse ? (
+              <View style={styles.imageContainer}>
+                <Image
+                  src={fileResponse?.uri}
+                  alt={
+                    fileResponse?.type?.includes('image') ? 'Image' : 'Document'
+                  }
+                  size={'lg'}
+                  style={styles.imageStyle}
+                />
+                <Button
+                  style={styles.uploadCancel}
+                  size={6}
+                  onPress={() => setFileResponse(null)}>
+                  <Iconify icon="basil:cross-solid" size={24} color={'white'} />
+                </Button>
+              </View>
+            ) : (
+              <Button
+                variant={'unstyled'}
+                style={styles.attachmentButton}
+                onPress={() =>
+                  SheetManager.show('upload-sheet', {
+                    payload: {
+                      fileResponse,
+                      setFileResponse,
+                      name: 'file',
+                      setValue,
+                    },
+                  })
+                }>
+                <Text style={styles.attachmentTitle}>Add Attachment</Text>
+              </Button>
+            )}
+            {!isTransfer ? (
+              <View style={styles.repeat}>
+                <View style={styles.repeatText}>
+                  <Text fontSize={16}>Repeat</Text>
+                  <Text variant={'p'} color={'gray.400'}>
+                    Repeat Transaction
+                  </Text>
+                </View>
+                <RHFSwitch name={'repeat'} />
+              </View>
+            ) : (
+              ''
+            )}
 
-          <Button
-            onPress={handleSubmit(onSubmit)}
-            style={styles.continueBtn}
-            isLoading={isLoading}>
-            <Text color={'white'}>Continue</Text>
-          </Button>
-        </View>
-      </ActionSheet>
-    </ScrollView>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              style={styles.continueBtn}
+              isLoading={isLoading}>
+              <Text color={'white'}>Continue</Text>
+            </Button>
+          </View>
+        </ActionSheet>
+      </ScrollView>
+      <FrequencySheet open={watch('repeat')} />
+    </>
   );
 };
 
@@ -275,4 +275,11 @@ const styles = StyleSheet.create({
       },
     ],
   }),
+  fromTo: {
+    position: 'relative',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    columnGap: 15,
+    minWidth: '100%',
+  },
 });

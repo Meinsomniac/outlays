@@ -1,45 +1,64 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {useMemo} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import * as Yup from 'yup';
 import {AddExpenseSheet} from '../../sheets/AddExpenseSheet';
-import {KeyboardAvoidingView, Text} from 'native-base';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Text} from 'native-base';
 import {RHFTextField} from '../../components/form/RHFTextField';
-import {position} from 'native-base/lib/typescript/theme/styled-system';
-import {isNumber} from '../../utils/common';
 import {Iconify} from 'react-native-iconify';
 
-const defaultValues = {
-  amount: '',
-  category: '',
-  description: '',
-  wallet: '',
-  repeat: false,
-  from: '',
-  to: '',
-};
-
 export const AddExpensePage = ({route}) => {
-  const AddExpenseSchema = Yup.object().shape({
-    amount: Yup.string().required(),
-    description: Yup.string().required(),
-    ...(route?.params?.title?.toLowerCase() === 'transfer'
-      ? {from: Yup.string().required(), to: Yup.string().required()}
-      : {
-          repeat: Yup.bool(),
-          wallet: Yup.string().required(),
-          category: Yup.string().required(),
-        }),
-  });
+  const isTransfer = route?.params?.title?.toLowerCase() === 'transfer';
+
+  const AddExpenseSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        amount: Yup.string().required(),
+        description: Yup.string().required(),
+        ...(isTransfer
+          ? {from: Yup.string().required(), to: Yup.string().required()}
+          : {
+              repeat: Yup.bool(),
+              wallet: Yup.string().required(),
+              category: Yup.string().required(),
+              frequency: Yup.string().required(),
+              // cycles: Yup.string().required(),
+              startDate: Yup.string().required(),
+              endDate: Yup.string().required(),
+            }),
+      }),
+    [isTransfer],
+  );
+
+  const defaultValues = useMemo(
+    () => ({
+      amount: '',
+      description: '',
+      ...(isTransfer
+        ? {
+            from: '',
+            to: '',
+          }
+        : {
+            category: '',
+            wallet: '',
+            repeat: false,
+            frequency: 'mon',
+            // cycles: '',
+            startDate: '',
+            endDate: '',
+          }),
+    }),
+    [isTransfer],
+  );
 
   const methods = useForm({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: yupResolver(AddExpenseSchema),
     shouldFocusError: false,
-    defaultValues,
+    defaultValues: defaultValues,
   });
 
   return (

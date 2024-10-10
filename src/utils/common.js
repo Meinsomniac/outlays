@@ -1,5 +1,5 @@
+import React from 'react';
 import {Iconify} from 'react-native-iconify';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export function isNumber(evt) {
   evt = evt ? evt : window.event;
@@ -50,3 +50,22 @@ export const getAlertIcon = (type, size) => {
   }
   return icon;
 };
+
+export const frequencyOptions = [
+  {
+    title: 'Yearly',
+    value: 'yr',
+  },
+  {
+    title: 'Monthly',
+    value: 'mon',
+  },
+  {
+    title: 'Daily',
+    value: 'daily',
+  },
+  {
+    title: 'Custom',
+    value: 'custom',
+  },
+];

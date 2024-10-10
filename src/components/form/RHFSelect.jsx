@@ -2,40 +2,45 @@ import React from 'react';
 import {FormControl, Select, WarningOutlineIcon} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {Alert} from 'react-native';
-import {defaultStyles} from '../../constants/defaultStyles';
 
 export function RHFSelect({name, options, placeholder, addOptionLabel}) {
   const {control} = useFormContext();
-
   return (
     <Controller
       name={name}
       control={control}
       render={({field, fieldState: {error}}) => (
-        <FormControl isInvalid={!!error?.message}>
+        <FormControl isInvalid={!!error?.message} isReadOnly>
+          {console.log(field.value)}
           <Select
             selectedValue={field.value}
+            variant="filled"
             onValueChange={field.onChange}
             placeholder={placeholder || 'Select an option'}
-            style={defaultStyles.default}
             borderRadius={10}
             _text={{
               fontSize: 'lg',
-            }}>
+            }}
+            isFocused={false}
+            isFocusVisible={false}>
             {[
-              {
-                title: addOptionLabel || 'Add a category',
-                value: null,
-                onClick: () =>
-                  Alert.alert(
-                    'In progress',
-                    'the functionality you are trying to access is currently in progress',
-                    [],
+              ...(addOptionLabel
+                ? [
                     {
-                      cancelable: true,
+                      title: addOptionLabel || 'Add a category',
+                      value: null,
+                      onClick: () =>
+                        Alert.alert(
+                          'In progress',
+                          'the functionality you are trying to access is currently in progress',
+                          [],
+                          {
+                            cancelable: true,
+                          },
+                        ),
                     },
-                  ),
-              },
+                  ]
+                : []),
               ...options,
             ]?.map(({title, value, onClick}) => {
               return value ? (
