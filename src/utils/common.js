@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React from 'react';
 import {Iconify} from 'react-native-iconify';
 
@@ -69,3 +70,7 @@ export const frequencyOptions = [
     value: 'custom',
   },
 ];
+
+export const formatDate = (date, format) => {
+  return dayjs(date).format(format || 'MMM DD, YYYY');
+};

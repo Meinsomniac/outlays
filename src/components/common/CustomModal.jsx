@@ -4,7 +4,13 @@ import {StyleSheet} from 'react-native';
 
 export function CustomModal({open, setOpen, children}) {
   return (
-    <Modal isOpen={open} onMagicTap={() => setOpen(true)}>
+    <Modal
+      isOpen={open}
+      onMagicTap={() => {
+        console.log('magic tap');
+        setOpen(false);
+      }}
+      onClose={() => setOpen(false)}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>{children}</View>
       </View>

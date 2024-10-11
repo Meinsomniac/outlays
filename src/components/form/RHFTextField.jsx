@@ -2,7 +2,6 @@ import React from 'react';
 import {FormControl, Input, View, WarningOutlineIcon} from 'native-base';
 import {Controller, useFormContext} from 'react-hook-form';
 import {defaultStyles} from '../../constants/defaultStyles';
-import {useWindowDimensions} from 'react-native';
 
 export function RHFTextField({
   name,
@@ -10,11 +9,12 @@ export function RHFTextField({
   placeholderColor,
   variant,
   leftElement,
+  rightElement,
   flexGrow,
+  onChange,
   ...other
 }) {
   const {control} = useFormContext();
-  const {width} = useWindowDimensions();
   return (
     <Controller
       name={name}
@@ -27,11 +27,15 @@ export function RHFTextField({
           <FormControl isInvalid={!!error?.message} padding={0}>
             <Input
               {...field}
-              onChangeText={field.onChange}
+              onChangeText={e => {
+                onChange && onChange(e);
+                field.onChange(e);
+              }}
               variant={variant || 'outline'}
               borderRadius={10}
               placeholderTextColor={placeholderColor}
-              leftElement={leftElement}
+              InputLeftElement={leftElement}
+              InputRightElement={rightElement}
               {...other}
               style={[defaultStyles.default, customStyle]}
             />
