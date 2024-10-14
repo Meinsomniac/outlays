@@ -24,6 +24,7 @@ import {useSpinAnimation} from '../utils/useAnimations';
 import {FrequencySheet} from './FrequencySheet';
 import {formatDate} from '../utils/common';
 import {NativeViewGestureHandler} from 'react-native-gesture-handler';
+import dayjs from 'dayjs';
 
 export const AddExpenseSheet = ({type}) => {
   //Local States
@@ -44,42 +45,39 @@ export const AddExpenseSheet = ({type}) => {
   const [addExpense, {isLoading}] = useAddExpenseMutation();
 
   //Functions
-  const onSubmit = useCallback(async values => {
-    console.log(values);
-    // const formData = new FormData();
-    // Object.entries(values)?.forEach(([key, value]) => {
-    //   if (key === 'file') {
-    //     formData.append(key, {
-    //       name: values?.file?.name || values?.file?.fileName,
-    //       type: values?.file?.type,
-    //       uri: values?.file?.uri,
-    //     });
-    //   } else formData.append(key, value);
-    // });
-    // formData?.append('type', type?.toLowerCase0);
-    // const response = await addExpense(formData);
-    // if (response?.data) {
-    //   showAlert({
-    //     title: response?.data?.message,
-    //   });
-    //   reset({
-    //     amount: '',
-    //     category: '',
-    //     description: '',
-    //     wallet: '',
-    //     repeat: false,
-    //     file: '',
-    //     from: '',
-    //     to: '',
-    //   });
-    // } else {
-    //   0;
-    //   showAlert({
-    //     title: response?.error?.message,
-    //     status: 'error',
-    //   });
-    // }
-  }, []);
+  const onSubmit = useCallback(
+    async values => {
+      const formData = new FormData();
+      Object.entries(values)?.forEach(([key, value]) => {
+        if (key === 'file') {
+          formData.append(key, {
+            name: values?.file?.name || values?.file?.fileName,
+            type: values?.file?.type,
+            uri: values?.file?.uri,
+          });
+        } else if (['startDate', 'endDate'].includes(key)) {
+          formData.append(key, dayjs(values?.[key]).unix());
+        } else {
+          formData.append(key, value);
+        }
+      });
+      formData?.append('type', type?.toLowerCase());
+      const response = await addExpense(formData);
+      if (response?.data) {
+        showAlert({
+          title: response?.data?.message,
+        });
+        reset();
+      } else {
+        0;
+        showAlert({
+          title: response?.error?.message,
+          status: 'error',
+        });
+      }
+    },
+    [addExpense, reset, showAlert, type],
+  );
 
   const swapValues = useCallback(() => {
     startSpin(1);
@@ -167,7 +165,7 @@ export const AddExpenseSheet = ({type}) => {
                 ) : (
                   ''
                 )}
-                {fileResponse ? (
+                {fileResponse && !!watch('file') ? (
                   <View style={styles.imageContainer}>
                     <Image
                       src={fileResponse?.uri}

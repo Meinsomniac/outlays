@@ -1,7 +1,7 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {getStorage, removeStorage} from '../utils/storageUtils';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {paths} from '../routes/paths';
 import {setUserDetails} from '../redux/auth/authSlice';
 
@@ -28,7 +28,7 @@ export default function AuthProvider({children}) {
     dispatch(setUserDetails({}));
     setIsAuthenticated(false);
     await removeStorage('token');
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     checkToken();

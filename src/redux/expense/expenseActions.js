@@ -14,7 +14,14 @@ const expenseApi = api.injectEndpoints({
       }),
       transformResponse: res => res,
     }),
+    getAllExpenses: builder.query({
+      query: () => ({
+        url: apiRoutes.ROOT + apiRoutes.EXPENSE.getAllExpenses.url,
+        method: apiRoutes.EXPENSE.getAllExpenses.method,
+      }),
+      transformResponse: res => res,
+    }),
   }),
 });
 
-export const {useAddExpenseMutation} = expenseApi;
+export const {useAddExpenseMutation, useGetAllExpensesQuery} = expenseApi;

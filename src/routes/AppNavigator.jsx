@@ -8,6 +8,7 @@ import AuthProvider from '../contexts/AuthContext';
 import {Loadable} from '../components/constants/ReactLazyLoading';
 import {paths} from './paths';
 import SignIn from '../pages/auth/SignIn';
+import {StyleSheet} from 'react-native';
 
 const SignUp = Loadable(lazy(() => import('../pages/auth/SignUp')));
 const CustomizedBottomTabs = Loadable(

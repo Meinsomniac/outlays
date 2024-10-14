@@ -19,5 +19,9 @@ export const apiRoutes = {
       url: '/add-expense',
       method: 'POST',
     },
+    getAllExpenses: {
+      url: '/expense',
+      method: 'GET',
+    },
   },
 };

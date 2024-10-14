@@ -29,20 +29,20 @@ export function FrequencySheet({open, onClose}) {
   const cyclesVisible = useMemo(() => frequency !== 'custom', [frequency]);
 
   const calculateDate = useCallback(
-    (date, cycle) => {
+    (date, cycle = 1) => {
       let start, end;
       start = date || dayjs();
       switch (frequency) {
         case 'yr':
-          end = dayjs(start)?.add(cycle || 1, 'years');
+          end = dayjs(start)?.add(cycle, 'years');
           break;
         case 'mon':
-          end = dayjs(start)?.add(cycle || 1, 'months');
+          end = dayjs(start)?.add(cycle, 'months');
           break;
         case 'daily':
         case 'custom':
         case 'default':
-          end = dayjs(start)?.add(cycle || 1, 'days');
+          end = dayjs(start)?.add(cycle, 'days');
           break;
       }
       setValue('startDate', start);

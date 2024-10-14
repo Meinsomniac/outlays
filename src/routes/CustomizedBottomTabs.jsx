@@ -7,7 +7,6 @@ import {Transactions} from '../pages/transactions/Transactions';
 import {Budget} from '../pages/budget/Budget';
 import {Profile} from '../pages/profile/Profile';
 import {useSpinAnimation} from '../utils/useAnimations';
-// import {myEventEmitter} from '../constants/EventEmitter';
 
 const bottomTabDefaultColor = 'rgb(127,61,255)';
 export default function CustomizedBottomTabs({navigation}) {
@@ -206,22 +205,28 @@ export default function CustomizedBottomTabs({navigation}) {
       <CurvedBottomBar.Screen
         name="Dashboard"
         position="LEFT"
-        component={() => <Home />}
+        component={Home}
         options={{
           headerShown: false,
         }}
       />
       <CurvedBottomBar.Screen
         name="Transactions"
-        component={() => <Transactions />}
+        component={Transactions}
         position="RIGHT"
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerBackVisible: true,
+          // headerTintColor: '#fff',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
         }}
       />
       <CurvedBottomBar.Screen
         name="Budget"
-        component={() => <Budget />}
+        component={Budget}
         position="LEFT"
         options={{
           headerShown: false,
@@ -229,7 +234,7 @@ export default function CustomizedBottomTabs({navigation}) {
       />
       <CurvedBottomBar.Screen
         name="Profile"
-        component={() => <Profile />}
+        component={Profile}
         position="RIGHT"
         options={{
           headerShown: false,
@@ -295,7 +300,7 @@ function AnimatedCircles({value, navigation, isCircleClicked}) {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   textStyle: condition => ({
     color: condition ? bottomTabDefaultColor : 'gray',
     fontSize: 12,

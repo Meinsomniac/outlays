@@ -55,7 +55,7 @@ export const AddExpensePage = ({route}) => {
 
   const methods = useForm({
     mode: 'onBlur',
-    reValidateMode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: yupResolver(AddExpenseSchema),
     shouldFocusError: false,
     defaultValues: defaultValues,

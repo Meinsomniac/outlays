@@ -7,7 +7,6 @@ export function CustomModal({open, setOpen, children}) {
     <Modal
       isOpen={open}
       onMagicTap={() => {
-        console.log('magic tap');
         setOpen(false);
       }}
       onClose={() => setOpen(false)}>
