@@ -63,11 +63,11 @@ export const AddExpensePage = ({route}) => {
 
   return (
     <>
-      <StatusBar
+      {/* <StatusBar
         backgroundColor={route?.params?.color}
         barStyle={'light-content'}
         hidden={false}
-      />
+      /> */}
       <FormProvider {...methods}>
         <View style={styles.body({color: route?.params?.color})}>
           <View style={styles.amountContainer}>

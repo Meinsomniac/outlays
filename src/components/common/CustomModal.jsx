@@ -1,4 +1,4 @@
-import {Modal, Text, View} from 'native-base';
+import {Modal, View} from 'native-base';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 

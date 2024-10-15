@@ -215,13 +215,8 @@ export default function CustomizedBottomTabs({navigation}) {
         component={Transactions}
         position="RIGHT"
         options={{
-          headerShown: true,
-          headerBackVisible: true,
-          // headerTintColor: '#fff',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
+          headerShown: false,
+          statusBarColor: 'rgb(127,61,255)',
         }}
       />
       <CurvedBottomBar.Screen
