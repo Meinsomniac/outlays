@@ -24,7 +24,7 @@ export function FrequencySheet({open, onClose}) {
 
   const sheetRef = useRef();
   const {watch, setValue} = useFormContext();
-  const {frequency, cycles, startDate, endDate} = watch();
+  const {frequency, cycles, startDate, endDate, repeat} = watch();
 
   const cyclesVisible = useMemo(() => frequency !== 'custom', [frequency]);
 
@@ -45,10 +45,10 @@ export function FrequencySheet({open, onClose}) {
           end = dayjs(start)?.add(cycle, 'days');
           break;
       }
-      setValue('startDate', start);
-      setValue('endDate', end);
+      setValue('startDate', repeat ? start : '');
+      setValue('endDate', repeat ? end : '');
     },
-    [frequency, setValue],
+    [frequency, repeat, setValue],
   );
 
   useLayoutEffect(() => {
@@ -58,7 +58,7 @@ export function FrequencySheet({open, onClose}) {
   useEffect(() => {
     calculateDate(startDate, cycles);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frequency]);
+  }, [frequency, repeat]);
 
   return (
     <ActionSheet ref={sheetRef} onClose={onClose}>

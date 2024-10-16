@@ -13,12 +13,10 @@ import {
 } from '../../redux/auth/authActions';
 import {Link, useNavigation} from '@react-navigation/native';
 import {paths} from '../../routes/paths';
-import {setUserDetails} from '../../redux/auth/authSlice';
 import {useDispatch} from 'react-redux';
 import {setStorage} from '../../utils/storageUtils';
 import {
   GoogleSignin,
-  statusCodes,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 import {AuthContext} from '../../contexts/AuthContext';
@@ -73,16 +71,15 @@ export default function SignIn() {
       if (res?.data?.accessToken) {
         await setStorage('token', res?.data?.accessToken);
         navigate(paths.home);
-        dispatch(setUserDetails(res?.data?.profile));
       }
     },
-    [signIn],
+    [navigate, signIn],
   );
 
   const handleGoogleLogin = useCallback(async () => {
     try {
       const response = await GoogleLogin();
-      const {idToken, user} = response?.data;
+      const {idToken} = response?.data;
       if (idToken) {
         const resp = await signInWithGoogle({token: idToken});
         if (resp.data) {
@@ -97,7 +94,7 @@ export default function SignIn() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setIsAuthenticated, signInWithGoogle]);
 
   return (
     <FormProvider {...methods}>

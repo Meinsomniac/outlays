@@ -1,35 +1,58 @@
 import React, {
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import ActionSheet, {
   SheetManager,
   useScrollHandlers,
 } from 'react-native-actions-sheet';
 import {RHFSelect} from '../components/form/RHFSelect';
 import {RHFTextField} from '../components/form/RHFTextField';
-import {Box, Button, HStack, Image, Text} from 'native-base';
+import {Box, Button, Image, Text} from 'native-base';
 import {Iconify} from 'react-native-iconify';
 import {RHFSwitch} from '../components/form/RHFSwitch';
 import {useFormContext} from 'react-hook-form';
 import {useAddExpenseMutation} from '../redux/expense/expenseActions';
-import {getStorage} from '../utils/storageUtils';
 import {AlertContext} from '../contexts/AlertContext';
 import {useSpinAnimation} from '../utils/useAnimations';
 import {FrequencySheet} from './FrequencySheet';
 import {formatDate} from '../utils/common';
 import {NativeViewGestureHandler} from 'react-native-gesture-handler';
 import dayjs from 'dayjs';
+import {useSelector} from 'react-redux';
+import {CategoryModal} from '../components/modals/CategoryModal';
 
 export const AddExpenseSheet = ({type}) => {
   //Local States
   const [fileResponse, setFileResponse] = useState(null);
   const [open, setOpen] = useState(false);
+  const [categoryModal, setCategoryModal] = useState({
+    open: false,
+    submitButtonAction: () => {},
+  });
+
+  const categoryOptions = useMemo(
+    () => [
+      {
+        title: 'Add a category',
+        value: null,
+        onClick: () => setCategoryModal(prev => ({...prev, open: true})),
+      },
+    ],
+    [],
+  );
+  const profileId = useSelector(state => state?.auth?.userDetails?.profileId);
 
   const sheetRef = useRef(null);
   const handlers = useScrollHandlers();
@@ -55,13 +78,14 @@ export const AddExpenseSheet = ({type}) => {
             type: values?.file?.type,
             uri: values?.file?.uri,
           });
-        } else if (['startDate', 'endDate'].includes(key)) {
+        } else if (value && ['startDate', 'endDate'].includes(key)) {
           formData.append(key, dayjs(values?.[key]).unix());
-        } else {
+        } else if (value) {
           formData.append(key, value);
         }
       });
       formData?.append('type', type?.toLowerCase());
+      formData?.append('profileId', profileId);
       const response = await addExpense(formData);
       if (response?.data) {
         showAlert({
@@ -76,7 +100,7 @@ export const AddExpenseSheet = ({type}) => {
         });
       }
     },
-    [addExpense, reset, showAlert, type],
+    [addExpense, profileId, reset, showAlert, type],
   );
 
   const swapValues = useCallback(() => {
@@ -89,14 +113,16 @@ export const AddExpenseSheet = ({type}) => {
   useLayoutEffect(() => {
     const sheet = sheetRef?.current;
     sheet?.show();
-    return () => sheet?.hide();
+    // return () => sheet?.hide();
   }, []);
+
+  sheetRef?.current?.show();
 
   const {startDate, endDate, repeat} = watch();
 
   return (
     <>
-      <ScrollView contentContainerStyle={{flex: 1}}>
+      <ScrollView contentContainerStyle={styles.flex}>
         <ActionSheet
           containerStyle={styles.mainSheetStyle}
           ref={sheetRef}
@@ -136,12 +162,7 @@ export const AddExpenseSheet = ({type}) => {
                     name={'category'}
                     placeholder={'Category'}
                     addOptionLabel={'Add a category'}
-                    options={[
-                      {
-                        title: 'Movie',
-                        value: 'movie',
-                      },
-                    ]}
+                    options={categoryOptions}
                   />
                 ) : (
                   ''
@@ -213,7 +234,13 @@ export const AddExpenseSheet = ({type}) => {
                         Repeat Transaction
                       </Text>
                     </View>
-                    <RHFSwitch name={'repeat'} />
+                    <RHFSwitch
+                      name={'repeat'}
+                      onToggle={() => {
+                        setValue('frequency', 'mon');
+                        setValue('cycles', '1');
+                      }}
+                    />
                   </View>
                 ) : (
                   ''
@@ -248,6 +275,10 @@ export const AddExpenseSheet = ({type}) => {
         </ActionSheet>
       </ScrollView>
       <FrequencySheet open={open} onClose={() => setOpen(false)} />
+      <CategoryModal
+        open={categoryModal.open}
+        onClose={() => setCategoryModal(prev => ({...prev, open: false}))}
+      />
     </>
   );
 };
@@ -337,5 +368,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#eff3f7',
     borderRadius: 8,
     padding: 8,
+  },
+  flex: {
+    flex: 1,
   },
 });

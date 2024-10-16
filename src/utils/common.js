@@ -74,3 +74,18 @@ export const frequencyOptions = [
 export const formatDate = (date, format) => {
   return dayjs(date).format(format || 'MMM DD, YYYY');
 };
+
+export const jwtDecode = t => {
+  if (t.includes('.')) {
+    let token = {
+      raw: '',
+      header: '',
+      payload: '',
+    };
+    token.raw = t;
+    token.header = JSON.parse(window.atob(t.split('.')[0]));
+    token.payload = JSON.parse(window.atob(t.split('.')[1]));
+    return token;
+  }
+  return t;
+};

@@ -9,7 +9,8 @@ export function CustomModal({open, setOpen, children}) {
       onMagicTap={() => {
         setOpen(false);
       }}
-      onClose={() => setOpen(false)}>
+      onClose={() => setOpen(false)}
+      style={styles.modalSpacing}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>{children}</View>
       </View>
@@ -36,5 +37,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  modalSpacing: {
+    padding: 15,
   },
 });

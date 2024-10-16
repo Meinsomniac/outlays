@@ -15,9 +15,10 @@ const expenseApi = api.injectEndpoints({
       transformResponse: res => res,
     }),
     getAllExpenses: builder.query({
-      query: () => ({
+      query: params => ({
         url: apiRoutes.ROOT + apiRoutes.EXPENSE.getAllExpenses.url,
         method: apiRoutes.EXPENSE.getAllExpenses.method,
+        params,
       }),
       transformResponse: res => res,
     }),

@@ -32,38 +32,41 @@ export function RHFSelect({
               }}
               isFocused={false}
               isFocusVisible={false}>
-              {[
-                ...(addOptionLabel
-                  ? [
-                      {
-                        title: addOptionLabel || 'Add a category',
-                        value: null,
-                        onClick: () =>
-                          Alert.alert(
-                            'In progress',
-                            'the functionality you are trying to access is currently in progress',
-                            [],
-                            {
-                              cancelable: true,
-                            },
-                          ),
-                      },
-                    ]
-                  : []),
-                ...options,
-              ]?.map(({title, value, onClick}) => {
-                return value ? (
-                  <Select.Item label={title} value={value} key={title} />
-                ) : (
-                  <Select.Item
-                    label={title}
-                    key={title}
-                    onPress={() => {
-                      onClick();
-                    }}
-                  />
-                );
-              })}
+              {
+                // [
+                //   ...(addOptionLabel
+                //     ? [
+                //         {
+                //           title: addOptionLabel || 'Add a category',
+                //           value: null,
+                //           onClick: () =>
+                //             Alert.alert(
+                //               'In progress',
+                //               'the functionality you are trying to access is currently in progress',
+                //               [],
+                //               {
+                //                 cancelable: true,
+                //               },
+                //             ),
+                //         },
+                //       ]
+                //     : []),
+                //   ...options,
+                // ]
+                options?.map(({title, value, onClick}) => {
+                  return value ? (
+                    <Select.Item label={title} value={value} key={title} />
+                  ) : (
+                    <Select.Item
+                      label={title}
+                      key={title}
+                      onPress={() => {
+                        onClick();
+                      }}
+                    />
+                  );
+                })
+              }
             </Select>
             {error?.message && (
               <FormControl.ErrorMessage

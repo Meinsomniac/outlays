@@ -1,7 +1,7 @@
 import {api} from '../apiInterceptor';
 import {apiRoutes} from '../apiRoutes';
 
-const authApi = api.injectEndpoints({
+export const authApi = api.injectEndpoints({
   endpoints: builder => ({
     signUp: builder.mutation({
       query: body => ({

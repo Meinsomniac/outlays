@@ -5,7 +5,7 @@ export const palette = {
   expense: {
     main: '#FD3C4A',
   },
-  earning: {
+  income: {
     main: '#00A86B',
   },
 };

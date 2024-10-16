@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {paths} from '../routes/paths';
 import {setUserDetails} from '../redux/auth/authSlice';
+import {jwtDecode} from '../utils/common';
 
 export const AuthContext = createContext({
   setIsAuthenticated: () => Promise.resolve(),
@@ -20,9 +21,10 @@ export default function AuthProvider({children}) {
     if (!accessToken && !isAuthenticated) {
       navigate(paths.signIn);
     } else {
+      dispatch(setUserDetails(jwtDecode(accessToken)?.payload));
       navigate(paths.home);
     }
-  }, [navigate, isAuthenticated]);
+  }, [isAuthenticated, navigate, dispatch]);
 
   const logout = useCallback(async () => {
     dispatch(setUserDetails({}));

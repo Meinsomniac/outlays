@@ -6,14 +6,16 @@ import {Pressable, StatusBar, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import dayjs from 'dayjs';
 import {palette} from '../../constants/theme/palette';
+import {useSelector} from 'react-redux';
 
-export const Transactions = memo(() => {
-  const {data, isLoading} = useGetAllExpensesQuery();
+const TransactionList = () => {
+  //local state
   const [currentTab, setCurrentTab] = useState('expense');
-  const amountColor = useMemo(
-    () => (currentTab === 'expense' ? '#00A86B' : 'red'),
-    [currentTab],
-  );
+  const profileId = useSelector(state => state?.auth?.userDetails?.profileId);
+  const {data, isLoading} = useGetAllExpensesQuery({
+    type: currentTab,
+    profileId,
+  });
   return (
     <View style={styles.mainContainer}>
       <Box style={styles.amountLeft(currentTab)}></Box>
@@ -27,10 +29,10 @@ export const Transactions = memo(() => {
                 Expenses
               </Text>
             </Pressable>
-            <Pressable onPress={() => setCurrentTab('earning')}>
+            <Pressable onPress={() => setCurrentTab('income')}>
               <Text
                 fontSize={'md'}
-                fontWeight={currentTab === 'earning' ? 'medium' : ''}>
+                fontWeight={currentTab === 'income' ? 'medium' : ''}>
                 Earnings
               </Text>
             </Pressable>
@@ -45,6 +47,7 @@ export const Transactions = memo(() => {
             }}
             contentContainerStyle={styles.bottomStyle}
             data={data || Array(8).fill(Math.floor(Math.random() * 15) + 1)}
+            extraData={{currentTab}}
             renderItem={({item}) => (
               <RenderItem
                 item={item}
@@ -58,10 +61,17 @@ export const Transactions = memo(() => {
       </Box>
     </View>
   );
-});
+};
 
-const RenderItem = React.memo(({item, isLoaded, currentTab}) => {
-  console.log(currentTab);
+export const Transactions = memo(TransactionList);
+
+const RenderItem = ({item, isLoaded, currentTab}) => {
+  const amountColor = useMemo(
+    () =>
+      currentTab === 'expense' ? palette.expense.main : palette.income.main,
+    [currentTab],
+  );
+
   return (
     <View style={styles.flexHorizontal}>
       <Skeleton h={70} w={70} borderRadius={10} isLoaded={isLoaded}>
@@ -91,7 +101,7 @@ const RenderItem = React.memo(({item, isLoaded, currentTab}) => {
               fontSize={'xl'}
               fontWeight={'semibold'}
               textAlign={'center'}
-              color={palette?.[currentTab]?.main}>
+              color={amountColor}>
               {`${currentTab === 'expense' ? '-' : '+'}${item?.amount}`}
             </Text>
           </Skeleton.Text>
@@ -104,7 +114,7 @@ const RenderItem = React.memo(({item, isLoaded, currentTab}) => {
       </Box>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   container: {
