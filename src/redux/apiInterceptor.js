@@ -3,6 +3,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 const baseQuery = fetchBaseQuery({
   baseUrl: '/',
   prepareHeaders: headers => {
+    // headers.set('is-ngrok', '1');
     return headers;
   },
 });

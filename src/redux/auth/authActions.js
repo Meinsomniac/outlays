@@ -5,7 +5,7 @@ export const authApi = api.injectEndpoints({
   endpoints: builder => ({
     signUp: builder.mutation({
       query: body => ({
-        url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signUp.url,
+        url: apiRoutes.AUTH + apiRoutes.AUTHENTICATION.signUp.url,
         method: apiRoutes.AUTHENTICATION.signUp.method,
         body,
       }),
@@ -13,7 +13,7 @@ export const authApi = api.injectEndpoints({
     }),
     signIn: builder.mutation({
       query: body => ({
-        url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signIn.url,
+        url: apiRoutes.AUTH + apiRoutes.AUTHENTICATION.signIn.url,
         method: apiRoutes.AUTHENTICATION.signIn.method,
         body,
       }),
@@ -21,7 +21,7 @@ export const authApi = api.injectEndpoints({
     }),
     signInWithGoogle: builder.mutation({
       query: body => ({
-        url: apiRoutes.ROOT + apiRoutes.AUTHENTICATION.signInWithGoogle.url,
+        url: apiRoutes.AUTH + apiRoutes.AUTHENTICATION.signInWithGoogle.url,
         method: apiRoutes.AUTHENTICATION.signInWithGoogle.method,
         body,
       }),

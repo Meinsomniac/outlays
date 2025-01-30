@@ -49,6 +49,11 @@ export const AddExpenseSheet = ({type}) => {
         value: null,
         onClick: () => setCategoryModal(prev => ({...prev, open: true})),
       },
+      {
+        title: 'Furniture',
+        value: 'furniture',
+        // onClick: () => setCategoryModal(prev => ({...prev, open: true})),
+      },
     ],
     [],
   );

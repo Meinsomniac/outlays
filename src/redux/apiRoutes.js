@@ -1,5 +1,6 @@
 export const apiRoutes = {
-  ROOT: 'http://10.0.1.38:3000/api',
+  ROOT: 'http://192.168.10.52:3000/api',
+  AUTH: 'http://192.168.10.52:3000/auth',
   AUTHENTICATION: {
     signUp: {
       url: '/sign-up',

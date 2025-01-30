@@ -11,6 +11,8 @@ import {useSignUpMutation} from '../../redux/auth/authActions';
 import {Link, useNavigation} from '@react-navigation/native';
 import {paths} from '../../routes/paths';
 import {useDispatch} from 'react-redux';
+import {setStorage} from '../../utils/storageUtils';
+import {setUserDetails} from '../../redux/auth/authSlice';
 
 const SignUpSchema = Yup.object().shape({
   firstName: validations.firstName(),
